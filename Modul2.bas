@@ -1594,8 +1594,8 @@ On Error GoTo LOKAL_ERROR
                 cArtNr = "0" & cArtNr
             Wend
             
-            If Not IsNull(rsrs!MENGE) Then
-                cMenge = rsrs!MENGE
+            If Not IsNull(rsrs!Menge) Then
+                cMenge = rsrs!Menge
             Else
                 cMenge = ""
             End If
@@ -1604,8 +1604,8 @@ On Error GoTo LOKAL_ERROR
                 cMenge = " " & cMenge
             Wend
             
-            If Not IsNull(rsrs!PREIS) Then
-                cPreis = Format(rsrs!PREIS, "#####0.00")
+            If Not IsNull(rsrs!Preis) Then
+                cPreis = Format(rsrs!Preis, "#####0.00")
             Else
                 cPreis = ""
             End If
@@ -1648,8 +1648,8 @@ On Error GoTo LOKAL_ERROR
                 cBELEGNR = "0" & cBELEGNR
             Wend
             
-            If Not IsNull(rsrs!KASNUM) Then
-                cKasnum = rsrs!KASNUM
+            If Not IsNull(rsrs!kasnum) Then
+                cKasnum = rsrs!kasnum
             Else
                 cKasnum = ""
             End If
@@ -1763,7 +1763,7 @@ On Error GoTo LOKAL_ERROR
     Dim cEkPreis        As String
     Dim cMwStWert       As String
     Dim cRabwert        As String
-    Dim cMwst           As String
+    Dim cMWST           As String
     
     Dim cSortiment      As String
     Dim cLieferant      As String
@@ -1815,8 +1815,8 @@ On Error GoTo LOKAL_ERROR
             End If
             
             lMenge = 0
-            If Not IsNull(rsrs!MENGE) Then
-                lMenge = rsrs!MENGE
+            If Not IsNull(rsrs!Menge) Then
+                lMenge = rsrs!Menge
             End If
             
             lVorgang = 1
@@ -1824,8 +1824,8 @@ On Error GoTo LOKAL_ERROR
                 lVorgang = 2
             End If
             
-            If Not IsNull(rsrs!PREIS) Then
-                cPreis = Format(rsrs!PREIS, "#####0.00")
+            If Not IsNull(rsrs!Preis) Then
+                cPreis = Format(rsrs!Preis, "#####0.00")
             Else
                 cPreis = "0"
             End If
@@ -1862,21 +1862,21 @@ On Error GoTo LOKAL_ERROR
                 cBELEGNR = ""
             End If
             
-            If Not IsNull(rsrs!KASNUM) Then
-                cKasnum = rsrs!KASNUM
+            If Not IsNull(rsrs!kasnum) Then
+                cKasnum = rsrs!kasnum
             Else
                 cKasnum = ""
             End If
             
             If Not IsNull(rsrs!MWST) Then
-                cMwst = rsrs!MWST
+                cMWST = rsrs!MWST
             Else
-                cMwst = ""
+                cMWST = ""
             End If
             
             
             
-            Select Case cMwst
+            Select Case cMWST
                 Case Is = "V"
                     cMwStWert = CStr(CDbl(cPreis) * gdMWStV / (100 + gdMWStV))
                 Case Is = "E"
@@ -4447,7 +4447,7 @@ LOKAL_ERROR:
     
     Fehler.gsDescr = err.Description
     Fehler.gsNumber = err.Number
-    Fehler.gsFormular = "Modul1"
+    Fehler.gsFormular = "Modul2"
     Fehler.gsFunktion = "ermKundenMenge"
     Fehler.gsFehlertext = "Es ist ein Fehler aufgetreten."
     
@@ -4501,7 +4501,7 @@ LOKAL_ERROR:
     
     Fehler.gsDescr = err.Description
     Fehler.gsNumber = err.Number
-    Fehler.gsFormular = "Modul1"
+    Fehler.gsFormular = "Modul2"
     Fehler.gsFunktion = "ermKundenumsatzproKauf"
     Fehler.gsFehlertext = "Es ist ein Fehler aufgetreten."
     
@@ -4619,7 +4619,7 @@ LOKAL_ERROR:
     
     Fehler.gsDescr = err.Description
     Fehler.gsNumber = err.Number
-    Fehler.gsFormular = "Modul1"
+    Fehler.gsFormular = "Modul2"
     Fehler.gsFunktion = "ermKundenumsatzproKaufalle"
     Fehler.gsFehlertext = "Es ist ein Fehler aufgetreten."
     
@@ -4661,7 +4661,7 @@ LOKAL_ERROR:
     
     Fehler.gsDescr = err.Description
     Fehler.gsNumber = err.Number
-    Fehler.gsFormular = "Modul1"
+    Fehler.gsFormular = "Modul2"
     Fehler.gsFunktion = "ermAktiveKundenzahlAusgesamtkassjour"
     Fehler.gsFehlertext = "Es ist ein Fehler aufgetreten."
     
@@ -4693,7 +4693,7 @@ LOKAL_ERROR:
     
     Fehler.gsDescr = err.Description
     Fehler.gsNumber = err.Number
-    Fehler.gsFormular = "Modul1"
+    Fehler.gsFormular = "Modul2"
     Fehler.gsFunktion = "ermumsatzproZR"
     Fehler.gsFehlertext = "Es ist ein Fehler aufgetreten."
     
@@ -11927,7 +11927,7 @@ Public Sub LeseArtBestandinFil(List1 As Object, List2 As Object)
         rsrs.MoveFirst
         Do While Not rsrs.EOF
             cFilnr = IIf(IsNull(rsrs!FILIALNR), "-1", rsrs!FILIALNR)
-            cFilname = IIf(IsNull(rsrs!FILIALNAME), "", rsrs!FILIALNAME)
+            cFilname = IIf(IsNull(rsrs!Filialname), "", rsrs!Filialname)
             ckPr = IIf(IsNull(rsrs!KVKPR1), "0,00", Format(rsrs!KVKPR1, "#####0.00"))
             cBestand = IIf(IsNull(rsrs!BESTAND), "0", rsrs!BESTAND)
             cMB = IIf(IsNull(rsrs!MB), "0", rsrs!MB)
@@ -12862,9 +12862,9 @@ Private Function ermAuftragswert(sTabname As String) As Double
     
         rsrs.MoveFirst
         Do While Not rsrs.EOF
-            If Not IsNull(rsrs!MENGE) Then
+            If Not IsNull(rsrs!Menge) Then
             
-                lMenge = rsrs!MENGE
+                lMenge = rsrs!Menge
                 
                 If Not IsNull(rsrs!lekpr) Then
                     dLEK = rsrs!lekpr
@@ -13193,15 +13193,87 @@ LOKAL_ERROR:
     
     Fehler.gsDescr = err.Description
     Fehler.gsNumber = err.Number
-    Fehler.gsFormular = "Modul5"
+    Fehler.gsFormular = "Modul2"
     Fehler.gsFunktion = "schickden_fehlenden_Report_Info_PerMail"
     Fehler.gsFehlertext = "Es ist ein Fehler aufgetreten."
     
     Fehlermeldung1
     
 End Sub
+
+Public Sub TabelleMWSTSATZ_Zurucksetzen()
+ On Error GoTo LOKAL_ERROR
+    
+    'warum wird diese Methode tatsächlich ausgeführt ?
+    
+    'viele (.rpt)-Dateien sind mit der Tabelle [MWSTSATZ] verknüpft, wobei diese Tabelle eine andere Struktur vorher hatte.
+    
+    'im Start-Formular [frmWkl00] wurde doch die Struktur der Tabelle [MWSTSATZ] wegen
+    '[DsFinv-K] erweitert(die erweiterung ist nur wegen DsFinv-K),aber diese Erweiterungen haben manche .rpt-Dateien beeinflusst,
+    'deswegen wird die Tabelle [MWSTSATZ] hier zum Zustand gebracht, wie die vor DsFinv-K war.
+    
+    'Hinweis: diese Methode muss vor dem Aufruf einer .rpt-Datei ausgeführt werden, und danach werden die Änderungen der
+    'Tabelle [MWSTSATZ] wieder gemacht.
+    
+    If Not NewTableSuchenDB("MWSTSATZ_sic", gdBase) Then
+     
+     'lass nur den Satz für dies Jahr in der Tabelle MWSTSATZ
+     
+      gdBase.Execute ("SELECT * INTO MWSTSATZ_sic FROM MWSTSATZ")
+     'gdBase.Execute ("update MWSTSATZ_sic set bisD=null where bisD=CDate('01.01.2100')")
+      gdBase.Execute ("update MWSTSATZ set bisD='01.01.2100' where bisD is null")
+      gdBase.Execute ("DELETE FROM MWSTSATZ WHERE CDate('" & Date & "') not between vonD and bisD")
+        
+        
+    End If
+     
+    
+    
+ Exit Sub
+LOKAL_ERROR:
+    
+    Fehler.gsDescr = err.Description
+    Fehler.gsNumber = err.Number
+    Fehler.gsFormular = "Modul2"
+    Fehler.gsFunktion = "TabelleMWSTSATZ_Zurucksetzen"
+    Fehler.gsFehlertext = "Es ist ein Fehler aufgetreten."
+    
+    Fehlermeldung1
+    
+End Sub
+    
+Public Sub TabelleMWSTSATZ_Erweiterungen_wiederherstellen()
+ On Error GoTo LOKAL_ERROR
+     
+    'die gemachten Änderungen rückgängig machen, die in der Funktion [ TabelleMWSTSATZ_Zurucksetzen ] auf der Tabelle [MWSTSATZ] gemacht wurden
+    
+    If NewTableSuchenDB("MWSTSATZ_sic", gdBase) Then
+     
+     gdBase.Execute ("DELETE FROM MWSTSATZ")
+     gdBase.Execute ("INSERT INTO MWSTSATZ SELECT * FROM MWSTSATZ_sic")
+     gdBase.Execute ("DROP Table MWSTSATZ_sic")
+    
+    End If
+    
+ Exit Sub
+LOKAL_ERROR:
+    
+    Fehler.gsDescr = err.Description
+    Fehler.gsNumber = err.Number
+    Fehler.gsFormular = "Modul2"
+    Fehler.gsFunktion = "TabelleMWSTSATZ_Erweiterungen_wiederherstellen"
+    Fehler.gsFehlertext = "Es ist ein Fehler aufgetreten."
+    
+    Fehlermeldung1
+    
+End Sub
+
+
+
 Public Sub reportbildschirm(dname As String, aname As String)
     On Error GoTo LOKAL_ERROR
+
+    TabelleMWSTSATZ_Zurucksetzen
 
     Dim cPfad As String
     Dim iFileNr As Integer
@@ -13238,6 +13310,7 @@ Public Sub reportbildschirm(dname As String, aname As String)
             schickden_fehlenden_Report_Info_PerMail aname & ".rpt"
             MsgBox ctmp, vbOKOnly, "Winkiss Hinweis:"
             
+            
             Exit Sub
         Else
             Screen.MousePointer = 11
@@ -13270,6 +13343,7 @@ Public Sub reportbildschirm(dname As String, aname As String)
             
         End If
     End With
+     
     
     Screen.MousePointer = 0
     
@@ -13286,13 +13360,16 @@ LOKAL_ERROR:
         Fehler.gsFehlertext = "Der Ausdruck " & aname & " konnte nicht geöffnet werden. "
             
         Fehlermeldung1
-    
+         
+        
         Resume Next
     End If
 
 End Sub
 Public Sub reportbildschirm_Gutschein(dname As String, aname As String, bMitVorschau As Boolean)
     On Error GoTo LOKAL_ERROR
+
+    TabelleMWSTSATZ_Zurucksetzen
 
     Dim cPfad As String
     Dim iFileNr As Integer
@@ -13328,7 +13405,7 @@ Public Sub reportbildschirm_Gutschein(dname As String, aname As String, bMitVors
             
             schickden_fehlenden_Report_Info_PerMail aname & ".rpt"
             MsgBox ctmp, vbOKOnly, "Winkiss Hinweis:"
-            
+             
             Exit Sub
         Else
             Screen.MousePointer = 11
@@ -13365,7 +13442,7 @@ Public Sub reportbildschirm_Gutschein(dname As String, aname As String, bMitVors
             
         End If
     End With
-    
+     
     Screen.MousePointer = 0
     
     Exit Sub
@@ -13381,14 +13458,16 @@ LOKAL_ERROR:
         Fehler.gsFehlertext = "Der Ausdruck " & aname & " konnte nicht geöffnet werden. "
             
         Fehlermeldung1
-    
+         
         Resume Next
     End If
 
 End Sub
 Public Sub reportbildschirmtoRTF_inDaba(aname As String, sVolldesPath As String)
     On Error GoTo LOKAL_ERROR
-
+    
+    TabelleMWSTSATZ_Zurucksetzen
+    
     Dim cPfad As String
     Screen.MousePointer = 11
 
@@ -13401,6 +13480,7 @@ Public Sub reportbildschirmtoRTF_inDaba(aname As String, sVolldesPath As String)
     With frmWKL00.CrystalReport1
         If Not FindFile(cPfad, aname & ".rpt") Then
             Screen.MousePointer = 0
+             
             Exit Sub
         Else
             Pause 1
@@ -13413,7 +13493,7 @@ Public Sub reportbildschirmtoRTF_inDaba(aname As String, sVolldesPath As String)
             .Action = 1
         End If
     End With
-    
+     
     Screen.MousePointer = 0
     Exit Sub
 LOKAL_ERROR:
@@ -13421,6 +13501,8 @@ End Sub
 Public Sub reportbildschirmohneDrucker(dname As String, aname As String)
     On Error GoTo LOKAL_ERROR
 
+    TabelleMWSTSATZ_Zurucksetzen
+     
     Dim cPfad As String
     Dim iFileNr As Integer
     Dim ctmp As String
@@ -13442,6 +13524,7 @@ Public Sub reportbildschirmohneDrucker(dname As String, aname As String)
         If Not Modul6.FindFile(cPfad, aname & ".rpt") Then
             Screen.MousePointer = 0
             MsgBox "Die Druckvorschau kann nicht erstellt werden.", vbOKOnly, "Winkiss Hinweis:"
+             
             Exit Sub
         Else
             Screen.MousePointer = 11
@@ -13460,7 +13543,7 @@ Public Sub reportbildschirmohneDrucker(dname As String, aname As String)
            
         End If
     End With
-    
+     
     Screen.MousePointer = 0
     
     
@@ -13493,7 +13576,8 @@ LOKAL_ERROR:
             
         
         Fehlermeldung1
-    
+     
+        
         Resume Next
     End If
 
@@ -13527,7 +13611,9 @@ LOKAL_ERROR:
 End Function
 Public Sub reportbildschirmtoText(aname As String, sVolldesPath As String)
     On Error GoTo LOKAL_ERROR
-
+    
+    TabelleMWSTSATZ_Zurucksetzen
+    
     Dim cPfad As String
     Dim iFileNr As Integer
     Dim ctmp As String
@@ -13545,6 +13631,7 @@ Public Sub reportbildschirmtoText(aname As String, sVolldesPath As String)
     With frmWKL00.CrystalReport1
         If Not Modul6.FindFile(cPfad, aname & ".rpt") Then
             Screen.MousePointer = 0
+             
             Exit Sub
         Else
 '            Pause 2
@@ -13568,7 +13655,7 @@ Public Sub reportbildschirmtoText(aname As String, sVolldesPath As String)
            
         End If
     End With
-    
+     
     Screen.MousePointer = 0
     
     
@@ -13583,13 +13670,14 @@ LOKAL_ERROR:
 '
 '
 '    Fehlermeldung1
-'
 '    Resume Next
 
 End Sub
 Public Sub reportbildschirmtoPDF(aname As String, sVolldesPath As String)
     On Error GoTo LOKAL_ERROR
-
+    
+    TabelleMWSTSATZ_Zurucksetzen
+     
     Dim cPfad As String
     Dim iFileNr As Integer
     Dim ctmp As String
@@ -13607,6 +13695,7 @@ Public Sub reportbildschirmtoPDF(aname As String, sVolldesPath As String)
     With frmWKL00.CrystalReport1
         If Not Modul6.FindFile(cPfad, aname & ".rpt") Then
             Screen.MousePointer = 0
+             
             Exit Sub
         Else
 '            Pause 2
@@ -13634,7 +13723,7 @@ Public Sub reportbildschirmtoPDF(aname As String, sVolldesPath As String)
     End With
     
     Screen.MousePointer = 0
-    
+     
     
     Exit Sub
 LOKAL_ERROR:
@@ -13647,13 +13736,14 @@ LOKAL_ERROR:
 '
 '
 '    Fehlermeldung1
-'
 '    Resume Next
 
 End Sub
 Public Sub reportbildschirmToPrinter(aname As String)
     On Error GoTo LOKAL_ERROR
-
+    
+    TabelleMWSTSATZ_Zurucksetzen
+    
     Dim cPfad As String
     Dim iFileNr As Integer
     Dim ctmp As String
@@ -13668,12 +13758,16 @@ Public Sub reportbildschirmToPrinter(aname As String)
         cPfad = cPfad & "\"
     End If
     
+     
     setzedrucker gcListenDrucker
+     
+     
     
     With frmWKL00.CrystalReport1
         If Not Modul6.FindFile(cPfad, aname & ".rpt") Then
             Screen.MousePointer = 0
             MsgBox "Die Druckvorschau kann nicht erstellt werden.", vbOKOnly, "Winkiss Hinweis:"
+             
             Exit Sub
         Else
             Pause 2
@@ -13694,7 +13788,6 @@ Public Sub reportbildschirmToPrinter(aname As String)
     Screen.MousePointer = 0
     
     'Fehlerauslöser wird vermutlich der nicht eingeschaltete Drucker sein
-    
     Exit Sub
 LOKAL_ERROR:
     Fehler.gsDescr = err.Description
@@ -13705,11 +13798,14 @@ LOKAL_ERROR:
         
     
     Fehlermeldung1
+     
     Resume Next
 End Sub
 Public Sub reportbildschirmToPrinterETI(aname As String, cDrucker As String, bPrinterset As Boolean)
     On Error GoTo LOKAL_ERROR
-
+    
+    TabelleMWSTSATZ_Zurucksetzen
+    
     Dim cPfad As String
     Dim iFileNr As Integer
     Dim ctmp As String
@@ -13732,6 +13828,7 @@ Public Sub reportbildschirmToPrinterETI(aname As String, cDrucker As String, bPr
         If Not Modul6.FindFile(cPfad, aname & ".rpt") Then
             Screen.MousePointer = 0
             MsgBox "Die Druckvorschau kann nicht erstellt werden.", vbOKOnly, "Winkiss Hinweis:"
+             
             Exit Sub
         Else
             If bPrinterset Then
@@ -13750,7 +13847,7 @@ Public Sub reportbildschirmToPrinterETI(aname As String, cDrucker As String, bPr
             .Action = 1
         End If
     End With
-    
+     
     Screen.MousePointer = 0
     
     Exit Sub
@@ -13763,11 +13860,14 @@ LOKAL_ERROR:
         
     
     Fehlermeldung1
+     
     Resume Next
    
 End Sub
 Public Sub reportbildschirmToPrinterAPP(aname As String, cDrucker As String)
     On Error GoTo LOKAL_ERROR
+
+    TabelleMWSTSATZ_Zurucksetzen
 
     Dim cPfad As String
     Dim iFileNr As Integer
@@ -13789,6 +13889,7 @@ Public Sub reportbildschirmToPrinterAPP(aname As String, cDrucker As String)
         If Not Modul6.FindFile(cPfad, aname & ".rpt") Then
             Screen.MousePointer = 0
             MsgBox "Die Druckvorschau kann nicht erstellt werden.", vbOKOnly, "Winkiss Hinweis:"
+             
             Exit Sub
         Else
             Pause 2
@@ -13805,7 +13906,7 @@ Public Sub reportbildschirmToPrinterAPP(aname As String, cDrucker As String)
            
         End If
     End With
-    
+     
     Screen.MousePointer = 0
     
     Exit Sub
@@ -13818,6 +13919,7 @@ LOKAL_ERROR:
         
     
     Fehlermeldung1
+     
     Resume Next
    
 End Sub
@@ -13875,6 +13977,8 @@ LOKAL_ERROR:
 End Function
 Public Sub reportbildschirmtoTextAppBestellEmail(aname As String, sVolldesPath As String)
     On Error GoTo LOKAL_ERROR
+    
+    TabelleMWSTSATZ_Zurucksetzen
 
     Dim cPfad As String
     Screen.MousePointer = 11
@@ -13888,6 +13992,7 @@ Public Sub reportbildschirmtoTextAppBestellEmail(aname As String, sVolldesPath A
     With frmWKL00.CrystalReport1
         If Not FindFile(cPfad, aname & ".rpt") Then
             Screen.MousePointer = 0
+             
             Exit Sub
         Else
             Pause 1
@@ -13899,8 +14004,7 @@ Public Sub reportbildschirmtoTextAppBestellEmail(aname As String, sVolldesPath A
             .Action = 1
         End If
     End With
-    
-    
+     
     Screen.MousePointer = 0
     
     
@@ -13909,6 +14013,8 @@ LOKAL_ERROR:
 End Sub
 Public Sub reportbildschirmApp(dname As String, aname As String)
     On Error GoTo LOKAL_ERROR
+
+     TabelleMWSTSATZ_Zurucksetzen
 
     Dim cPfad As String
     Dim sSQL As String
@@ -13936,7 +14042,7 @@ Public Sub reportbildschirmApp(dname As String, aname As String)
                 
                 schickden_fehlenden_Report_Info_PerMail aname & ".rpt"
                 MsgBox ctmp, vbOKOnly, "Winkiss Hinweis:"
-            
+                 
                 Exit Sub
             Else
 
@@ -13957,6 +14063,7 @@ Public Sub reportbildschirmApp(dname As String, aname As String)
         .Destination = 0
         .Action = 1
     End With
+     
     
     Exit Sub
 LOKAL_ERROR:
@@ -13970,6 +14077,8 @@ LOKAL_ERROR:
         Fehler.gsFehlertext = "Der Ausdruck " & aname & " konnte nicht geöffnet werden. "
         
         Fehlermeldung1
+         
+        
     End If
     
 End Sub
@@ -17537,7 +17646,7 @@ On Error GoTo LOKAL_ERROR
     rsGZ!ADATE = lDat
     rsGZ!AZEIT = czeit
     rsGZ!artnr = cArtNr
-    rsGZ!MENGE = cMenge
+    rsGZ!Menge = cMenge
     rsGZ!VONFILIALE = gcFilNr
     rsGZ!ZIELFILIALE = cZielFil
     rsGZ!FILIALE = gcFilNr
@@ -17564,7 +17673,7 @@ On Error GoTo LOKAL_ERROR
     Dim rsArt       As DAO.Recordset
     
     Dim cBezeich    As String
-    Dim cMwst       As String
+    Dim cMWST       As String
     
     Dim cKVkPr1     As String
     Dim cEkPr       As String
@@ -17588,7 +17697,7 @@ On Error GoTo LOKAL_ERROR
         End If
         
         If Not IsNull(rsArt!MWST) Then
-            cMwst = rsArt!MWST
+            cMWST = rsArt!MWST
         End If
         
         If Not IsNull(rsArt!KVKPR1) Then
@@ -17620,7 +17729,7 @@ On Error GoTo LOKAL_ERROR
     rsKB!BEDNU = lbednu
     rsKB!Kundnr = lKUNDNR
     rsKB!FILIALE = Val(gcFilNr)
-    rsKB!MWST = cMwst
+    rsKB!MWST = cMWST
     rsKB!ekpr = cEkPr
     rsKB!vkpr = cVKPR
     rsKB!StatusARTIKEL = "INBESTELLUNG"
@@ -19974,7 +20083,7 @@ LOKAL_ERROR:
     
     Fehlermeldung1
 End Function
-Public Function NettoErtrag(dKVP As String, dEK As String, cMwst As String) As String
+Public Function NettoErtrag(dKVP As String, dEK As String, cMWST As String) As String
     On Error GoTo LOKAL_ERROR
             
     Dim dSpanne1    As Double
@@ -19986,15 +20095,15 @@ Public Function NettoErtrag(dKVP As String, dEK As String, cMwst As String) As S
     
     If IsNumeric(dKVP) = False Then Exit Function
     
-    If Trim(cMwst) <> "V" And Trim(cMwst) <> "E" And Trim(cMwst) <> "O" Then 'cMWSt
+    If Trim(cMWST) <> "V" And Trim(cMWST) <> "E" And Trim(cMWST) <> "O" Then 'cMWSt
         Exit Function
     End If
     
     NettoErtrag = "0"
     
-    If cMwst = "V" Then
+    If cMWST = "V" Then
         dSpanne1 = (dKVP * 100) / (100 + gdMWStV)
-    ElseIf cMwst = "E" Then
+    ElseIf cMWST = "E" Then
         dSpanne1 = (dKVP * 100) / (100 + gdMWStE)
     Else
         dSpanne1 = (dKVP * 100) / 100
@@ -20013,7 +20122,7 @@ LOKAL_ERROR:
     
     Fehlermeldung1
 End Function
-Public Function NettospanneInProzent(dKVP As String, dEK As String, cMwst As String) As String
+Public Function NettospanneInProzent(dKVP As String, dEK As String, cMWST As String) As String
     On Error GoTo LOKAL_ERROR
             
     Dim dSpanne     As Double
@@ -20032,7 +20141,7 @@ Public Function NettospanneInProzent(dKVP As String, dEK As String, cMwst As Str
         Exit Function
     End If
     
-    If Trim(cMwst) <> "V" And Trim(cMwst) <> "E" And Trim(cMwst) <> "O" Then 'cMWSt
+    If Trim(cMWST) <> "V" And Trim(cMWST) <> "E" And Trim(cMWST) <> "O" Then 'cMWSt
         Exit Function
     End If
     
@@ -20040,9 +20149,9 @@ Public Function NettospanneInProzent(dKVP As String, dEK As String, cMwst As Str
     
     NettospanneInProzent = "0"
     
-    If cMwst = "V" Then
+    If cMWST = "V" Then
         dSpanne1 = (dKVP * 100) / (100 + gdMWStV)
-    ElseIf cMwst = "E" Then
+    ElseIf cMWST = "E" Then
         dSpanne1 = (dKVP * 100) / (100 + gdMWStE)
     Else
         dSpanne1 = (dKVP * 100) / 100
@@ -20081,7 +20190,7 @@ Public Function NettospanneInProzent_neu(cArtNr As String) As String
     Dim sSQL        As String
     Dim dKVP        As Double
     Dim dEK         As Double
-    Dim cMwst       As String
+    Dim cMWST       As String
     
     NettospanneInProzent_neu = "0"
     
@@ -20093,7 +20202,7 @@ Public Function NettospanneInProzent_neu(cArtNr As String) As String
         End If
         
         If Not IsNull(rsrs!MWST) Then
-            cMwst = rsrs!MWST
+            cMWST = rsrs!MWST
         End If
         
         If Not IsNull(rsrs!ekpr) Then
@@ -20134,7 +20243,7 @@ Public Function NettospanneInProzent_neu(cArtNr As String) As String
         Exit Function
     End If
     
-    If Trim(cMwst) <> "V" And Trim(cMwst) <> "E" And Trim(cMwst) <> "O" Then 'cMWSt
+    If Trim(cMWST) <> "V" And Trim(cMWST) <> "E" And Trim(cMWST) <> "O" Then 'cMWSt
         Exit Function
     End If
     
@@ -20142,9 +20251,9 @@ Public Function NettospanneInProzent_neu(cArtNr As String) As String
     
     NettospanneInProzent_neu = "0"
     
-    If cMwst = "V" Then
+    If cMWST = "V" Then
         dSpanne1 = (dKVP * 100) / (100 + gdMWStV)
-    ElseIf cMwst = "E" Then
+    ElseIf cMWST = "E" Then
         dSpanne1 = (dKVP * 100) / (100 + gdMWStE)
     Else
         dSpanne1 = (dKVP * 100) / 100
@@ -21094,7 +21203,7 @@ LOKAL_ERROR:
     Fehlermeldung1
 
 End Function
-Public Function NettospanneInEuro(dKVP As String, dEK As String, cMwst As String) As String
+Public Function NettospanneInEuro(dKVP As String, dEK As String, cMWST As String) As String
     On Error GoTo LOKAL_ERROR
             
 '    Dim dSpanne     As Double
@@ -21105,9 +21214,9 @@ Public Function NettospanneInEuro(dKVP As String, dEK As String, cMwst As String
 
     NettospanneInEuro = "0"
     
-    If cMwst = "V" Then
+    If cMWST = "V" Then
         dSpanne1 = (dKVP * 100) / (100 + gdMWStV)
-    ElseIf cMwst = "E" Then
+    ElseIf cMWST = "E" Then
         dSpanne1 = (dKVP * 100) / (100 + gdMWStE)
     Else
         dSpanne1 = (dKVP * 100) / 100
@@ -21357,7 +21466,7 @@ LOKAL_ERROR:
   
     Fehler.gsDescr = err.Description
     Fehler.gsNumber = err.Number
-    Fehler.gsFormular = "Modul1"
+    Fehler.gsFormular = "Modul2"
     Fehler.gsFunktion = "ermArtikelSchwundZR"
     Fehler.gsFehlertext = "Es ist ein Fehler aufgetreten."
     
@@ -21392,7 +21501,7 @@ LOKAL_ERROR:
   
     Fehler.gsDescr = err.Description
     Fehler.gsNumber = err.Number
-    Fehler.gsFormular = "Modul1"
+    Fehler.gsFormular = "Modul2"
     Fehler.gsFunktion = "ermArtikelSchwundSEKWERTZR"
     Fehler.gsFehlertext = "Es ist ein Fehler aufgetreten."
     
@@ -21475,7 +21584,7 @@ LOKAL_ERROR:
   
     Fehler.gsDescr = err.Description
     Fehler.gsNumber = err.Number
-    Fehler.gsFormular = "Modul1"
+    Fehler.gsFormular = "Modul2"
     Fehler.gsFunktion = "ermArtikelSchwundNettoertragZR"
     Fehler.gsFehlertext = "Es ist ein Fehler aufgetreten."
     
@@ -21506,7 +21615,7 @@ LOKAL_ERROR:
   
     Fehler.gsDescr = err.Description
     Fehler.gsNumber = err.Number
-    Fehler.gsFormular = "Modul1"
+    Fehler.gsFormular = "Modul2"
     Fehler.gsFunktion = "ermNeuKundenZR"
     Fehler.gsFehlertext = "Es ist ein Fehler aufgetreten."
     
@@ -21819,7 +21928,7 @@ Exit Function
 LOKAL_ERROR:
     Fehler.gsDescr = err.Description
     Fehler.gsNumber = err.Number
-    Fehler.gsFormular = "Modul1"
+    Fehler.gsFormular = "Modul2"
     Fehler.gsFunktion = "wievieleSterneQuick"
     Fehler.gsFehlertext = "Es ist ein Fehler aufgetreten. "
     
@@ -21863,7 +21972,7 @@ Exit Function
 LOKAL_ERROR:
     Fehler.gsDescr = err.Description
     Fehler.gsNumber = err.Number
-    Fehler.gsFormular = "Modul1"
+    Fehler.gsFormular = "Modul2"
     Fehler.gsFunktion = "wievieleSterneAltQuick"
     Fehler.gsFehlertext = "Es ist ein Fehler aufgetreten. "
     
@@ -21928,7 +22037,7 @@ Exit Function
 LOKAL_ERROR:
     Fehler.gsDescr = err.Description
     Fehler.gsNumber = err.Number
-    Fehler.gsFormular = "Modul1"
+    Fehler.gsFormular = "Modul2"
     Fehler.gsFunktion = "wievieleSterne"
     Fehler.gsFehlertext = "Es ist ein Fehler aufgetreten. "
     
@@ -21968,7 +22077,7 @@ Exit Function
 LOKAL_ERROR:
     Fehler.gsDescr = err.Description
     Fehler.gsNumber = err.Number
-    Fehler.gsFormular = "Modul1"
+    Fehler.gsFormular = "Modul2"
     Fehler.gsFunktion = "wievieleSterneAlt"
     Fehler.gsFehlertext = "Es ist ein Fehler aufgetreten. "
     
@@ -22238,7 +22347,7 @@ LOKAL_ERROR:
   
     Fehler.gsDescr = err.Description
     Fehler.gsNumber = err.Number
-    Fehler.gsFormular = "Modul1"
+    Fehler.gsFormular = "Modul2"
     Fehler.gsFunktion = "ermNeinVKZR"
     Fehler.gsFehlertext = "Es ist ein Fehler aufgetreten."
     
