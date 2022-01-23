@@ -1976,6 +1976,7 @@ Public WithEvents rfConnection As cConnection
 Attribute rfConnection.VB_VarHelpID = -1
 Public cFiles As New Collection, cAttrs As New Collection, cSize As New Collection, cRemAttrs As New Collection
 Public nTotal As Long, DriveCol As New Collection, sCurPath As String
+
 Private Sub Command9_Click(index As Integer)
 On Error GoTo LOKAL_ERROR
     
@@ -2177,6 +2178,16 @@ Private Sub Form_Load()
         Case Is = 48
             Label16.Caption = "Jetzt wird die Boerlind-Bestellung abgeschickt." & vbCrLf
             Label16.Caption = Label16.Caption & "Drücken Sie 'Start'!"
+    
+        Case Is = 49
+            Label16.Caption = "Jetzt wird eine Test Datei abgeschickt." & vbCrLf
+            Label16.Caption = Label16.Caption & "Drücken Sie 'Start'!"
+            
+        Case Is = 50
+            Label16.Caption = "die gerettete F_Datei wird abgeschickt." & vbCrLf
+            Label16.Caption = Label16.Caption & "Drücken Sie 'Start'!"
+            
+            
     End Select
     
     Label16.Refresh
@@ -2482,7 +2493,17 @@ Private Sub cmdStart_Click()
                 Case Is = 48        'mit hinterlegten Userdaten FTP , Boerlind-Bestellung hochladen
                     BoerBestellungen
                     
-                
+                Case Is = 49       'Test-Datei senden
+                     TestBestellungSenden
+                    
+                Case Is = 50         'gerettete F_Datei an die Zentrale senden
+                    If RettungF_DateienAnZentrale Then
+                         geretteteF_DateiErfolgreichAbgeschickt = True
+                    Else
+                        geretteteF_DateiErfolgreichAbgeschickt = False
+                        MsgBox ("Absenden von der geretteten F_Datei war fehlgeschlagen !")
+                    End If
+                    
                 End Select
             End If
     
@@ -3303,14 +3324,14 @@ End Function
 Private Sub cmdPutNew_Click()
     On Error GoTo LOKAL_ERROR
     
-    Dim cnt As Long, bOk As Boolean, ret As Long
+    Dim cnt As Long, bOk As Boolean, Ret As Long
     For cnt = 1 To lvLocal.ListItems.Count
         If lvLocal.ListItems.Item(cnt).Selected = True Then
             If lvLocal.ListItems.Item(cnt).Text <> ".." And Right$(lvLocal.ListItems.Item(cnt).Text, 2) <> ":\" Then
                 If (GetAttr(sCurPath + lvLocal.ListItems.Item(cnt).Text) And vbDirectory) <> vbDirectory Then
-                    ret = FindRemoteFileSize(lvLocal.ListItems.Item(cnt).Text)
-                    If ret <> -1 Then
-                        If FileLen(sCurPath + lvLocal.ListItems.Item(cnt).Text) <> ret Then
+                    Ret = FindRemoteFileSize(lvLocal.ListItems.Item(cnt).Text)
+                    If Ret <> -1 Then
+                        If FileLen(sCurPath + lvLocal.ListItems.Item(cnt).Text) <> Ret Then
                             AddToCollection FOP_UPLOAD, lvLocal.ListItems.Item(cnt).Text, sCurPath, FileLen(sCurPath + lvLocal.ListItems.Item(cnt).Text)
                             bOk = True
                         End If
@@ -3424,10 +3445,10 @@ End Sub
 Private Sub cmdrMkDir_Click()
     On Error GoTo LOKAL_ERROR
     
-    Dim ret As String
-    ret = InputBox("Enter new remote directory name:")
-    If ret <> "" Then
-        rfConnection.CreateDirectory ret
+    Dim Ret As String
+    Ret = InputBox("Enter new remote directory name:")
+    If Ret <> "" Then
+        rfConnection.CreateDirectory Ret
         GetStatus
         FillRemoteListView
     End If
@@ -3462,11 +3483,11 @@ Private Sub cmdrRename_Click()
     On Error GoTo LOKAL_ERROR
     
     If lvRemote.SelectedItem.index = 1 Then Exit Sub
-    Dim ret As String
-    ret = InputBox("Enter the new name for " + lvRemote.SelectedItem.Text)
-    If ret <> "" Then
+    Dim Ret As String
+    Ret = InputBox("Enter the new name for " + lvRemote.SelectedItem.Text)
+    If Ret <> "" Then
         rfFile.RemoteFile = lvRemote.SelectedItem.Text
-        rfFile.RenameFile rfConnection, ret
+        rfFile.RenameFile rfConnection, Ret
         GetStatus
         FillRemoteListView
     End If
@@ -4523,10 +4544,10 @@ Private Sub lvRemote_DblClick()
         MsgBox "Unable to execute command...", vbExclamation + vbOKOnly, App.Title
         Exit Sub
     End If
-    Dim ret As Long
-    ret = GetRemoteIndex
-    If ret <> -1 Then
-        If (cRemAttrs.Item(ret) And vbDirectory) = vbDirectory Then
+    Dim Ret As Long
+    Ret = GetRemoteIndex
+    If Ret <> -1 Then
+        If (cRemAttrs.Item(Ret) And vbDirectory) = vbDirectory Then
             rfConnection.SetNewDirectory lvRemote.SelectedItem
             GetStatus
             FillRemoteListView
@@ -4570,7 +4591,7 @@ End Function
 Public Sub FillLocalListView(sPath As String)
     On Error GoTo LOKAL_ERROR
     
-    Dim ret As String, cnt As Long, Tel As Long
+    Dim Ret As String, cnt As Long, Tel As Long
     If IsDriveAvailable(sPath) = False Then
         MsgBox "Drive not ready!", vbCritical + vbOKOnly, App.Title
         Exit Sub
@@ -4579,20 +4600,20 @@ Public Sub FillLocalListView(sPath As String)
     lvLocal.ListItems.Clear
     lvLocal.ListItems.Add , , "..", , "Up"
     lstTemp.Clear
-    ret = Dir(sPath, vbDirectory)
-    While ret <> ""
-        If (GetAttr(sPath + ret) And vbDirectory) = vbDirectory And ret <> ".." And ret <> "." Then lstTemp.AddItem ret
-        ret = Dir()
+    Ret = Dir(sPath, vbDirectory)
+    While Ret <> ""
+        If (GetAttr(sPath + Ret) And vbDirectory) = vbDirectory And Ret <> ".." And Ret <> "." Then lstTemp.AddItem Ret
+        Ret = Dir()
     Wend
     Tel = lstTemp.ListCount
     For cnt = 0 To lstTemp.ListCount - 1
         lvLocal.ListItems.Add , , lstTemp.list(cnt), , "Directory"
     Next cnt
     lstTemp.Clear
-    ret = Dir(sPath + txtPattern.Text, vbNormal)
-    While ret <> ""
-        If (GetAttr(sPath + ret) And vbDirectory) <> vbDirectory Then lstTemp.AddItem ret
-        ret = Dir()
+    Ret = Dir(sPath + txtPattern.Text, vbNormal)
+    While Ret <> ""
+        If (GetAttr(sPath + Ret) And vbDirectory) <> vbDirectory Then lstTemp.AddItem Ret
+        Ret = Dir()
     Wend
     Tel = Tel + lstTemp.ListCount
     For cnt = 0 To lstTemp.ListCount - 1
@@ -5282,7 +5303,7 @@ Private Sub UebertrageAllVonFTP_Budni(sKUNDNR As String) 'nur für
     
         
         Select Case Left(sfilename, 28)
-        
+                        
             Case Is = "BUDNIDESADV_Kunde " & sKUNDNR
                 lvRemote.ListItems.Item(i).Selected = True
                 
@@ -6726,100 +6747,100 @@ Private Function UebertrageAllesEinzelnvonLokal_forBudni(sLOPfa As String) As Bo
     
     UebertrageAllesEinzelnvonLokal_forBudni = True
     bFound = False
-    sLoTransPfa = gcDBPfad    'Datenbankpfad
-    If Right$(sLoTransPfa, 1) <> "\" Then
-        sLoTransPfa = sLoTransPfa & "\"
-    End If
-    sLoTransPfa = sLoTransPfa & "TRANSOUT\"
-    Kill sLoTransPfa & "*.*"
+'    sLoTransPfa = gcDBPfad    'Datenbankpfad
+'    If Right$(sLoTransPfa, 1) <> "\" Then
+'        sLoTransPfa = sLoTransPfa & "\"
+'    End If
+'    sLoTransPfa = sLoTransPfa & "TRANSOUT\"
+'    Kill sLoTransPfa & "*.*"
     
     File1.Path = sLOPfa
     File1.Refresh
 
     For i = 0 To File1.ListCount - 1
     
-        Randomize
-        Wert1 = 0
-        sDumminame = "D"
-        sOriName = ""
-        Wert1 = Int((9999 * Rnd) + 1)   ' Zufallszahl im Bereich von 1 bis 99999
+        'Randomize
+        'Wert1 = 0
+        'sDumminame = "D"
+        'sOriName = ""
+        'Wert1 = Int((9999 * Rnd) + 1)   ' Zufallszahl im Bereich von 1 bis 99999
         
         sOriName = File1.list(i)
-        sDumminame = sDumminame & CStr(Wert1) & sOriName
+        'sDumminame = sDumminame & CStr(Wert1) & sOriName
 
-'        sOriName = File1.list(i)
+
 
         'Jetzt erste Datei umbenennen und ins Transout kopieren
-        oldpath = sLOPfa & File1.list(i)
-        newpath = sLoTransPfa & sDumminame
-        lRet = CopyFile(oldpath, newpath, lfail)
+        'oldpath = sLOPfa & File1.list(i)
+        'newpath = sLoTransPfa & sDumminame
+        'lRet = CopyFile(oldpath, newpath, lfail)
         
         Pause (1)
         
-        UebertrageEinzelDat sDumminame, sLoTransPfa
-
-        For j = 1 To lvRemote.ListItems.Count
-            
-            If lvRemote.ListItems.Item(j) = sDumminame Then
-                bFound = True
-                
-                lvRemote.ListItems.Item(j).Selected = True
-
-                Pause (9)
-                EinzeldatUmbenennenR sOriName
-                Pause (9)
-                
-                For l = 1 To lvRemote.ListItems.Count
-                
-                    If UCase(lvRemote.ListItems.Item(l)) = UCase(sOriName) Then
-                    
-'''''                        If gbErrPrint Then
-'''''                            Dim cDatum      As String
-'''''                            Dim czeit       As String
-'''''                            ReDim cZeilen(0 To 6) As String
-'''''
-'''''                            cDatum = DateValue(Now)
-'''''                            czeit = TimeValue(Now)
-'''''
-'''''                            'Drucke den Beleg
-'''''
-'''''                            cZeilen(0) = "Dateiübertragung"
-'''''                            cZeilen(1) = "-----------------"
-'''''                            cZeilen(2) = "Diese Datei: " & sOriName
-'''''                            cZeilen(3) = "wurde übertragen"
-'''''                            cZeilen(4) = ""
-'''''                            cZeilen(5) = "Datum: " & cDatum
-'''''                            cZeilen(6) = "Zeit:  " & czeit
-'''''
-'''''                            DruckeArbeitszeitBelegWK20d cZeilen(), 6
-'''''                        End If
-                        
-                        Kill sLoTransPfa & sDumminame
-                        Kill sLOPfa & sOriName
-                        gbBudni_Bestellung_erfolgreich = True
-                        bFound = True
-                        Exit For
-                        
-                    Else
-                        bFound = False
-                    End If
-                Next l
-            Else
-                lvRemote.ListItems.Item(j).Selected = False
-                bFound = False
-            End If
-        Next j
         
-        If bFound = False Then
-            UebertrageAllesEinzelnvonLokal_forBudni = False
-            Exit For
+        'UebertrageEinzelDat sDumminame, sLoTransPfa
+         UebertrageEinzelDat sOriName, sLOPfa
+        
+        'Odayy <<<< START
+        Pause (9)
+        'Odayy <<<< ENDE
+        
+        Kill sLOPfa & sOriName
+        
+        'hier wurde frueher geprueft, ob die Bestellung Datei schon angekommen ist (nicht mehr notig)  <<<<<<<<<<<<<<<<<<<<< START
+        
+'        For j = 1 To lvRemote.ListItems.Count
+'
+'            If lvRemote.ListItems.Item(j) = sDumminame Then
+'
+'                bFound = True
+'                lvRemote.ListItems.Item(j).Selected = True
+'
+'                Pause (9)
+'                EinzeldatUmbenennenR sOriName
+'                Pause (9)
+'
+'                For l = 1 To lvRemote.ListItems.Count
+'
+'                    If UCase(lvRemote.ListItems.Item(l)) = UCase(sOriName) Then
+'
+'                        Kill sLoTransPfa & sDumminame
+'                        Kill sLOPfa & sOriName
+'                        gbBudni_Bestellung_erfolgreich = True
+'                        bFound = True
+'                        Exit For
+'
+'                    Else
+'                        bFound = False
+'                    End If
+'                Next l
+'
+'            Else
+'                lvRemote.ListItems.Item(j).Selected = False
+'                bFound = False
+'            End If
+'        Next j
+        
+'        If bFound = False Then
+'            UebertrageAllesEinzelnvonLokal_forBudni = False
+'            Exit For
+'
+'        End If
 
-        End If
-
+         'hier wurde frueher geprueft, ob die Bestellung Datei schon angekommen ist (nicht mehr notig)  <<<<<<<<<<<<<<<<<<<<< ENDE
+         
     Next i
+    
+    
+     gbBudni_Bestellung_erfolgreich = True
+     bFound = True
     
     Exit Function
 LOKAL_ERROR:
+
+    gbBudni_Bestellung_erfolgreich = False
+    UebertrageAllesEinzelnvonLokal_forBudni = False
+     
     If err.Number = 53 Or err.Number = 35600 Then
         Resume Next
     Else
@@ -8851,8 +8872,13 @@ LOKAL_ERROR:
     Fehlermeldung1
 End Sub
 Private Sub BudniBestellungen()
-    Dim sBestPfad As String
-    
+
+ Dim sBestPfad As String
+
+ If gbBudniNeuesFtpVerfahren Then
+
+ 'das neue FTP-Verfahren für Budni <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< START
+ 
     sBestPfad = App.Path               'Bestellpfad
     If Right$(sBestPfad, 1) <> "\" Then
         sBestPfad = sBestPfad & "\"
@@ -8862,10 +8888,14 @@ Private Sub BudniBestellungen()
     Label16.Caption = "Übertragung wird vorbereitet..."
     Label16.Refresh
  
-    sHosti = "ftp.budni.de"
-    sUseri = "Dronova_Ernst"
-    sPassi = "Budn!3rnst"
+    'Zum Testen
+    'sHosti = "astra.kisswws.de"
+    'sUseri = "dronova"
+    'sPassi = "Tn7wp9G6"
     
+    sHosti = "astra.kisswws.de"
+    sUseri = "EdekaSftp"
+    sPassi = "B68MWk-yYhz%"
     
     cmdConnect_Click 'Ftp connect
     
@@ -8877,7 +8907,7 @@ Private Sub BudniBestellungen()
     WechsleInsUnterverzLOKAL sBestPfad
     
     Pause (3)
-    WechsleInsUnterverzFTP "PXI_BESTELL" 'scharf ist immer PXI 'Test ist EXI
+    WechsleInsUnterverzFTP "ZWWS_ORDERS"
     Pause (3)
     UebertrageAllesEinzelnvonLokal_forBudni sBestPfad
 
@@ -8903,7 +8933,68 @@ Private Sub BudniBestellungen()
         Command8.Visible = True
         Command8.Caption = "Beenden"
     End If
+
+   'das neue FTP-Verfahren für Budni <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ENDE
+   
+ Else
     
+
+    sBestPfad = App.Path               'Bestellpfad
+    If Right$(sBestPfad, 1) <> "\" Then
+        sBestPfad = sBestPfad & "\"
+    End If
+    sBestPfad = sBestPfad & "EDI\"
+
+    Label16.Caption = "Übertragung wird vorbereitet..."
+    Label16.Refresh
+
+    sHosti = "ftp.budni.de"
+    sUseri = "Dronova_Ernst"
+    sPassi = "Budn!3rnst"
+
+
+    cmdConnect_Click 'Ftp connect
+
+    Label16.Caption = "FTP - Server wird verbunden..."
+    Label16.Refresh
+
+    Pause (1)
+
+    WechsleInsUnterverzLOKAL sBestPfad
+
+    Pause (3)
+    WechsleInsUnterverzFTP "PXI_BESTELL" 'scharf ist immer PXI 'Test ist EXI
+    Pause (3)
+    UebertrageAllesEinzelnvonLokal_forBudni sBestPfad
+
+
+    Pause (1)
+
+    gbErfolg = True
+    Label16.Caption = "FTP - Server wird getrennt..."
+    Label16.Refresh
+
+    cmdConnect_Click 'Ftp disconnect
+
+    Verbindungtrennen
+
+    If gbFTPautomatic = False Then
+
+        Pause (1)
+
+        Label16.Caption = "Die Übertragung war fehlerfrei." & vbCrLf & vbCrLf
+        Label16.Caption = Label16.Caption & "Drücken Sie 'Beenden'!"
+        Label16.Refresh
+
+        Command8.Visible = True
+        Command8.Caption = "Beenden"
+    End If
+
+
+ 
+ End If
+ 
+ 
 Exit Sub
 LOKAL_ERROR:
     Fehler.gsDescr = err.Description
@@ -8917,6 +9008,8 @@ End Sub
 Private Sub BudniLieferavis()
     On Error GoTo LOKAL_ERROR
 
+   
+    
     Dim sSQL            As String
     Dim sBudniKundnr    As String
     Dim rsLi            As DAO.Recordset
@@ -8926,7 +9019,12 @@ Private Sub BudniLieferavis()
     
     sBudniKundnr = ""
     
-    sSQL = "select KUNDNR from LISRT where FORMAT = 'EDIBUDNI'"
+    If gbBudniNeuesFtpVerfahren Then
+     sSQL = "select KUNDNR from LISRT where FORMAT = 'EDIBHSG'"
+    Else
+     sSQL = "select KUNDNR from LISRT where FORMAT = 'EDIBUDNI'"
+    End If
+    
     Set rsLi = gdBase.OpenRecordset(sSQL)
     If Not rsLi.EOF Then
         sBudniKundnr = Trim(rsLi!Kundnr)
@@ -8936,14 +9034,25 @@ Private Sub BudniLieferavis()
     If Val(sBudniKundnr) = 0 Then
         Exit Sub
     End If
-
-'    sHosti = "ftp.budni.de"
-'    sUseri = "Dronova_Ernst"
-'    sPassi = "Budn!3rnst"
     
-    sHosti = "ftp.budni.de"
-    sUseri = "Dronova_Brnas"
-    sPassi = "Budn!jger16"
+    If gbBudniNeuesFtpVerfahren Then
+    
+        'zum Testen
+        'sHosti = "astra.kisswws.de"
+        'sUseri = "dronova"
+        'sPassi = "Tn7wp9G6"
+        
+        sHosti = "astra.kisswws.de"
+        sUseri = "EdekaSftp"
+        sPassi = "B68MWk-yYhz%"
+        
+    Else
+        
+        sHosti = "ftp.budni.de"
+        sUseri = "Dronova_Brnas"
+        sPassi = "Budn!jger16"
+        
+    End If
     
     cmdConnect_Click 'Ftp connect
     
@@ -8960,7 +9069,16 @@ Private Sub BudniLieferavis()
     Label16.Caption = "nach Lieferscheinen suchen..."
     Label16.Refresh
     
-    WechsleInsUnterverzFTP "PXI_LIEFERAVIS"
+    If gbBudniNeuesFtpVerfahren Then
+    
+     WechsleInsUnterverzFTP "ZWWS_DESADV"
+     
+    Else
+    
+     WechsleInsUnterverzFTP "PXI_LIEFERAVIS"
+    
+    End If
+    
     Pause (3)
     UebertrageAllVonFTP_Budni sBudniKundnr
     
@@ -8998,6 +9116,9 @@ Private Sub BudniLieferavis()
         Command8.Caption = "Beenden"
     End If
     
+      
+    
+    
 Exit Sub
 LOKAL_ERROR:
     Fehler.gsDescr = err.Description
@@ -9008,6 +9129,82 @@ LOKAL_ERROR:
 
     Fehlermeldung1
 End Sub
+
+
+Private Sub TestBestellungSenden()
+
+ Dim sBestPfad As String
+ 
+
+ 'das neue FTP-Verfahren für Budni <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< START
+ 
+    sBestPfad = App.Path               'Bestellpfad
+    If Right$(sBestPfad, 1) <> "\" Then
+        sBestPfad = sBestPfad & "\"
+    End If
+    sBestPfad = sBestPfad & "EDI\"
+    
+    Label16.Caption = "Übertragung wird vorbereitet..."
+    Label16.Refresh
+    
+    sHosti = "astra.kisswws.de"
+    sUseri = "EdekaSftp"
+    sPassi = "B68MWk-yYhz%"
+    
+    cmdConnect_Click 'Ftp connect
+    
+    Label16.Caption = "FTP - Server wird verbunden..."
+    Label16.Refresh
+    
+    Pause (1)
+    
+    WechsleInsUnterverzLOKAL sBestPfad
+    
+    Pause (3)
+    WechsleInsUnterverzFTP "TEST_WINKISS"
+    Pause (3)
+    UebertrageAllesEinzelnvonLokal_forBudni sBestPfad
+
+
+    Pause (1)
+    
+    gbErfolg = True
+    Label16.Caption = "FTP - Server wird getrennt..."
+    Label16.Refresh
+    
+    cmdConnect_Click 'Ftp disconnect
+    
+    Verbindungtrennen
+    
+    If gbFTPautomatic = False Then
+    
+        Pause (1)
+        
+        Label16.Caption = "Die Übertragung war fehlerfrei." & vbCrLf & vbCrLf
+        Label16.Caption = Label16.Caption & "Drücken Sie 'Beenden'!"
+        Label16.Refresh
+        
+        Command8.Visible = True
+        Command8.Caption = "Beenden"
+    End If
+
+   'das neue FTP-Verfahren für Budni <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ENDE
+   
+   
+   Exit Sub
+LOKAL_ERROR:
+    Fehler.gsDescr = err.Description
+    Fehler.gsNumber = err.Number
+    Fehler.gsFormular = Me.name
+    Fehler.gsFunktion = "TestBestellungSenden"
+    Fehler.gsFehlertext = "Im Programmteil FTP - Datenübertragung ist ein Fehler aufgetreten."
+
+    Fehlermeldung1
+End Sub
+
+
+
+
 Private Sub Lüning_Stada_holen()
     On Error GoTo LOKAL_ERROR
 
@@ -9510,9 +9707,14 @@ Private Sub LOREALZuUns()
     Label16.Caption = "Übertragung wird vorbereitet..."
     Label16.Refresh
     
-    sHosti = "80.86.85.121"
-    sUseri = "kiss"
-    sPassi = "34df8k"
+'    sHosti = "80.86.85.121"
+'    sUseri = "kiss"
+'    sPassi = "34df8k"
+    
+    sHosti = "astra.kisswws.de"
+    sUseri = "LorealSftp"
+    sPassi = "B66Hjskk-yYhz%"
+
     cmdConnect_Click 'Ftp connect
     
     Label16.Caption = "FTP - Server wird verbunden..."
@@ -9731,6 +9933,91 @@ LOKAL_ERROR:
 
     Fehlermeldung1
 End Sub
+
+
+Private Function RettungF_DateienAnZentrale() As Boolean
+    On Error GoTo LOKAL_ERROR
+
+    RettungF_DateienAnZentrale = False
+ 
+    Label16.Caption = "geretteten F_Datei wird versendet..."
+    Label16.Refresh
+
+    Pause (1)
+
+    sHosti = gsZenFTPAdresse
+    sUseri = gsZenFTPUSER
+    sPassi = gsZenFTPPASS
+
+    cmdConnect.Caption = "Connect"
+    cmdConnect_Click 'Ftp connect
+    cmdConnect.Caption = "Disconnect"
+
+    Pause (1)
+    WechsleInsUnterverzLOKAL gcDBPfad & "\RettungAnZentrale\"
+    Pause (1)
+    WechsleInsUnterverzFTP "LIVEIN"
+    Pause (1)
+    UebertrageAllVonLOKAL
+    
+'    'Ftp disconnect
+'    cmdConnect_Click
+'
+'    'danach wieder verbinden um auf höchster Ebene einzusteigen
+'    cmdConnect.Caption = "Connect"
+'
+'    'Ftp connect
+'    cmdConnect_Click
+'    cmdConnect.Caption = "Disconnect"
+'
+'    Pause (1)
+'    WechsleInsUnterverzLOKAL gcDBPfad & "\RettungAnZentrale\"
+'    Pause (1)
+'    WechsleInsUnterverzFTP "ZENIN"
+'    UebertrageAllVonLOKAL
+    
+    
+    Pause (1)
+
+
+    DelAllLOKAL
+    Pause (1)
+    
+    gbErfolg = True
+    Label16.Caption = "FTP - Server wird getrennt..."
+    Label16.Refresh
+    
+    cmdConnect_Click 'Ftp disconnect
+    
+    Verbindungtrennen
+    
+    
+
+    If giKissFtpMode <> 10 Then
+
+        Label16.Caption = "Die Übertragung war fehlerfrei." & vbCrLf & vbCrLf
+        Label16.Refresh
+        
+        Command8.Visible = True
+        Command8.Caption = "Beenden"
+        
+        Command8_Click
+
+    End If
+    
+    RettungF_DateienAnZentrale = True
+
+Exit Function
+LOKAL_ERROR:
+    Fehler.gsDescr = err.Description
+    Fehler.gsNumber = err.Number
+    Fehler.gsFormular = Me.name
+    Fehler.gsFunktion = "RettungF_DateienAnZentrale"
+    Fehler.gsFehlertext = "Im Programmteil FTP - Datenübertragung ist ein Fehler aufgetreten."
+
+    Fehlermeldung1
+End Function
+
 ''''Private Sub ReweZuUns()
 ''''    On Error GoTo LOKAL_ERROR
 ''''    Dim sDabaBestPfad As String

@@ -1,9 +1,9 @@
 VERSION 5.00
 Object = "{7D622DE6-0ABC-471E-9234-97DEC5E0A708}#3.8#0"; "sevCmd3.ocx"
-Object = "{00025600-0000-0000-C000-000000000046}#5.2#0"; "Crystl32.OCX"
+Object = "{00025600-0000-0000-C000-000000000046}#5.2#0"; "CRYSTL32.OCX"
 Object = "{648A5603-2C6E-101B-82B6-000000000014}#1.1#0"; "MSCOMM32.OCX"
 Object = "{0BA686C6-F7D3-101A-993E-0000C0EF6F5E}#1.0#0"; "threed32.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.2#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.2#0"; "Mscomctl.ocx"
 Object = "{0ECD9B60-23AA-11D0-B351-00A0C9055D8E}#6.0#0"; "mshflxgd.ocx"
 Object = "{248DD890-BB45-11CF-9ABC-0080C7E7B78D}#1.0#0"; "MSWINSCK.OCX"
 Begin VB.Form frmWKL20 
@@ -24703,7 +24703,7 @@ Private Sub AktualisiereListboxWKL20aufGrundPreisKZand()
     Dim cArtNr      As String
     Dim dFaktorV    As Double
     Dim dFaktorE    As Double
-    Dim cMwst       As String
+    Dim cMWST       As String
     Dim cUmsOK      As String
     
     dFaktorV = 1 + (gdMWStV / 100)
@@ -24738,9 +24738,9 @@ Private Sub AktualisiereListboxWKL20aufGrundPreisKZand()
             If Not rsrs.EOF Then
             
                 If Not IsNull(rsrs!MWST) Then
-                    cMwst = rsrs!MWST
+                    cMWST = rsrs!MWST
                 Else
-                    cMwst = "V"
+                    cMWST = "V"
                 End If
                 
                 cUmsOK = "J"
@@ -24772,10 +24772,10 @@ Private Sub AktualisiereListboxWKL20aufGrundPreisKZand()
                             End If
                         End If
                         
-                        If cMwst = "V" Then
+                        If cMWST = "V" Then
                             dEPreis = dEPreis * dFaktorV
                         End If
-                        If cMwst = "E" Then
+                        If cMWST = "E" Then
                             dEPreis = dEPreis * dFaktorE
                         End If
                     Case Is = 3
@@ -24784,10 +24784,10 @@ Private Sub AktualisiereListboxWKL20aufGrundPreisKZand()
                         Else
                             dEPreis = 0
                         End If
-                        If cMwst = "V" Then
+                        If cMWST = "V" Then
                             dEPreis = dEPreis * dFaktorV
                         End If
-                        If cMwst = "E" Then
+                        If cMWST = "E" Then
                             dEPreis = dEPreis * dFaktorE
                         End If
                     Case Is = 4 'Spez kvk
@@ -24819,14 +24819,14 @@ Private Sub AktualisiereListboxWKL20aufGrundPreisKZand()
                         Else
                             dEPreis = 0
                         End If
-                        If cMwst = "V" Then
+                        If cMWST = "V" Then
                             dEPreis = dEPreis * 100 / (100 + gdMWStV)
                         End If
-                        If cMwst = "E" Then
+                        If cMWST = "E" Then
                             dEPreis = dEPreis * 100 / (100 + gdMWStE)
                         End If
                         
-                        cMwst = "O"
+                        cMWST = "O"
                         
 '                        cUmsOK = "N"
                 End Select
@@ -24842,7 +24842,7 @@ Private Sub AktualisiereListboxWKL20aufGrundPreisKZand()
 '                End If
 '
             
-                Mid(cLBSatz, 72, 1) = cMwst
+                Mid(cLBSatz, 72, 1) = cMWST
             
             
                 ctmp = Format$(dEPreis, "#####0.00")
@@ -24923,7 +24923,7 @@ Private Function AktualisiereEinzelArtikelAufGrundPreisKZ(cArtNr As String) As D
     Dim ctmp        As String
     Dim dFaktorV    As Double
     Dim dFaktorE    As Double
-    Dim cMwst       As String
+    Dim cMWST       As String
     
     dFaktorV = 1 + (gdMWStV / 100)
     dFaktorE = 1 + (gdMWStE / 100)
@@ -24947,9 +24947,9 @@ Private Function AktualisiereEinzelArtikelAufGrundPreisKZ(cArtNr As String) As D
     If Not rsrs.EOF Then
     
         If Not IsNull(rsrs!MWST) Then
-            cMwst = rsrs!MWST
+            cMWST = rsrs!MWST
         Else
-            cMwst = "V"
+            cMWST = "V"
         End If
     
         Select Case Val(Label8(3).Caption)
@@ -24979,10 +24979,10 @@ Private Function AktualisiereEinzelArtikelAufGrundPreisKZ(cArtNr As String) As D
                     End If
                 End If
                 
-                If cMwst = "V" Then
+                If cMWST = "V" Then
                     dEPreis = dEPreis * dFaktorV
                 End If
-                If cMwst = "E" Then
+                If cMWST = "E" Then
                     dEPreis = dEPreis * dFaktorE
                 End If
             Case Is = 3
@@ -24991,10 +24991,10 @@ Private Function AktualisiereEinzelArtikelAufGrundPreisKZ(cArtNr As String) As D
                 Else
                     dEPreis = 0
                 End If
-                If cMwst = "V" Then
+                If cMWST = "V" Then
                     dEPreis = dEPreis * dFaktorV
                 End If
-                If cMwst = "E" Then
+                If cMWST = "E" Then
                     dEPreis = dEPreis * dFaktorE
                 End If
             Case Is = 4 'Spez kvk
@@ -25026,10 +25026,10 @@ Private Function AktualisiereEinzelArtikelAufGrundPreisKZ(cArtNr As String) As D
                 Else
                     dEPreis = 0
                 End If
-                If cMwst = "V" Then
+                If cMWST = "V" Then
                     dEPreis = dEPreis * 100 / (100 + gdMWStV)
                 End If
-                If cMwst = "E" Then
+                If cMWST = "E" Then
                     dEPreis = dEPreis * 100 / (100 + gdMWStE)
                 End If
         End Select
@@ -26454,20 +26454,20 @@ Private Sub Command33_Click(index As Integer)
             Kasstime = SwapStr(Kasstime, ":", "")
             lKasstimeEnde = CLng(Kasstime)
             
-            Dim Ldiff As Long
-            Ldiff = 0
+            Dim lDiff As Long
+            lDiff = 0
             If CInt(Right(lKasstimeBegin, 2)) >= 55 Then
-                Ldiff = 1
+                lDiff = 1
             Else
-                Ldiff = lKasstimeEnde - lKasstimeBegin
+                lDiff = lKasstimeEnde - lKasstimeBegin
             End If
             
             iFehlerstufe = 14
             
             schreibeProtokollKassErr "Kassiervorgang endet: Bon Nr.: " & Label18.Caption
             
-            If Ldiff > 4 Then
-                abinsProtokoll CStr(Ldiff)
+            If lDiff > 4 Then
+                abinsProtokoll CStr(lDiff)
             End If
             
             iFehlerstufe = 15
@@ -26909,14 +26909,14 @@ Private Sub BerechneZwischenSummeWKL20()
     
     If gbParknetto Then
     
-        Dim cMwst As String
+        Dim cMWST As String
         Dim dArtRab As Double
         Dim dwert12 As Double
     
         For lAktSatz = 0 To lAnzSatz - 1
             cLBSatz = List1.list(lAktSatz)
             
-            cMwst = Mid(cLBSatz, 72, 1)
+            cMWST = Mid(cLBSatz, 72, 1)
             
             iMenge = 0
             If Left(cLBSatz, 1) = "x" Then
@@ -26934,7 +26934,7 @@ Private Sub BerechneZwischenSummeWKL20()
                 cFeld = Trim$(cFeld)
                 cFeld = fnMoveComma2Point$(cFeld)
                 dWert = Val(cFeld)
-                dWert = nettoR(dWert, cMwst)
+                dWert = nettoR(dWert, cMWST)
                 dWert = Format$(dWert, "#####0.00")
                 dWert = dWert * iMenge
                 ctmp = Mid(cLBSatz, 124, 3) 'artikelrab
@@ -30292,7 +30292,7 @@ Private Sub SchreibeDaten2KreditWKL20()
     Dim ekpr        As Single
     Dim vkpr        As Single
     Dim lKUNDNR     As Long
-    Dim cMwst       As String
+    Dim cMWST       As String
     Dim cBezeich    As String
     Dim GVKPR       As Single
     Dim AVKPR       As Single
@@ -30327,7 +30327,7 @@ Private Sub SchreibeDaten2KreditWKL20()
         lKUNDNR = Val(ctmp)
           
         ctmp = Mid(cLBSatz, 72, 1)
-        cMwst = Trim$(ctmp)
+        cMWST = Trim$(ctmp)
         
         ctmp = Mid(cLBSatz, 14, 35)
         cBezeich = Trim$(ctmp)
@@ -30356,7 +30356,7 @@ Private Sub SchreibeDaten2KreditWKL20()
         sSQL = sSQL & " , '" & ekpr & "'"
         sSQL = sSQL & " , '" & vkpr & "'"
         sSQL = sSQL & " , " & lKUNDNR
-        sSQL = sSQL & " , '" & cMwst & "'"
+        sSQL = sSQL & " , '" & cMWST & "'"
         sSQL = sSQL & " , '" & cBezeich & "'"
         sSQL = sSQL & " , '" & GVKPR & "'"
         sSQL = sSQL & " , " & CLng(DateValue(Now))
@@ -30565,7 +30565,7 @@ Private Sub SchreibeNeuenPreisWKL20(cNeuerPreis As String)
     
     Dim lAnz        As Long
     Dim ctmp        As String
-    Dim cMwst       As String
+    Dim cMWST       As String
     Dim cLBSatz     As String
     Dim dWert       As Double
     Dim dSumme      As Double
@@ -30581,7 +30581,7 @@ Private Sub SchreibeNeuenPreisWKL20(cNeuerPreis As String)
         cNeuerPreis = Left(cNeuerPreis, Len(cNeuerPreis) - 2) & "," & Right(cNeuerPreis, 2)
     End If
     
-    cMwst = Label17(8).Caption
+    cMWST = Label17(8).Caption
     
     ctmp = fnMoveComma2Point(cNeuerPreis)
     cNeuerP = ctmp
@@ -30616,7 +30616,7 @@ Private Sub SchreibeNeuenPreisWKL20(cNeuerPreis As String)
     Label17(6).Caption = "0"
     Label17(7).Caption = "0,00"
     
-    Select Case cMwst
+    Select Case cMWST
         Case Is = "V"
             dWert = dSumme * (gdMWStV / 100)
             ctmp = Format$(dWert, "#####0.00")
@@ -32450,7 +32450,7 @@ Private Sub SendeDaten2DruckerNeuWKL20()
     Dim ctmp                    As String
     Dim cAnz                    As String
     Dim cTmp2                   As String
-    Dim cMwst                   As String
+    Dim cMWST                   As String
     Dim cText                   As String
     Dim cMWSTzzgl               As String
     Dim aDeviceName             As String
@@ -32781,8 +32781,8 @@ StartPunkt:
                 iLevel = 41
                 cFeld = Mid(cLBSatz, 72, 1)
                 cDaten = cDaten & cFeld ' & "  "
-                cMwst = cFeld
-                cMWSTzzgl = cMwst
+                cMWST = cFeld
+                cMWSTzzgl = cMWST
                 
                 iLevel = 42
                 'neu
@@ -33063,7 +33063,7 @@ StartPunkt:
                 '***********************************************
                 'MWSt-Summe berechnen
                 '***********************************************
-                If cMwst = "V" Then
+                If cMWST = "V" Then
                     dMWSt = dWert / (100 + gdMWStV)
                     dMWSt = dMWSt * gdMWStV
                     dMWStVoll = dMWStVoll + dMWSt
@@ -33072,7 +33072,7 @@ StartPunkt:
                     dMWStAnteilNettoVoll = dMWStAnteilNettoVoll + ((dWert * 100) / (100 + gdMWStV))
                     dMWStAnteilBruttoVoll = dMWStAnteilBruttoVoll + dWert
                     
-                ElseIf cMwst = "E" Then
+                ElseIf cMWST = "E" Then
                    dMWSt = dWert / (100 + gdMWStE)
                     dMWSt = dMWSt * gdMWStE
                     dMWStErm = dMWStErm + dMWSt
@@ -33204,7 +33204,9 @@ StartPunkt:
             dSparSatzsum = dSparSatzsum + dWert
         
             ctmp = Format$(dWert, "###,##0.00")
-            ctmp = Space$(8 - Len(ctmp)) & ctmp
+            'Odayy Änderung [ich habe Abs()funktion genutzt um die negative Differenz(8 - Len(ctmp)) zu vermeiden] <<<<<<< START
+             ctmp = Space$(Abs(8 - Len(ctmp))) & ctmp
+            'Odayy Änderung [ich habe Abs()funktion genutzt um die negative Differenz(8 - Len(ctmp)) zu vermeiden] <<<<<<< ENDE
             cDaten = cDaten & ctmp
             
             KonvertAnsiAscii cDaten
@@ -35665,16 +35667,16 @@ NACH_TSE:
         Else
          
         
-        For lcount = 1 To 9
-            If lcount = 9 Then
-               cEscapeSequenz = vbCrLf
-            Else
-               cEscapeSequenz = " " & vbCrLf
-            End If
-            lAnzZeile = lAnzZeile + 1
-            ReDim Preserve cDruckZeile(1 To lAnzZeile) As String
-            cDruckZeile(lAnzZeile) = cEscapeSequenz
-        Next lcount
+            For lcount = 1 To 9
+                If lcount = 9 Then
+                   cEscapeSequenz = vbCrLf
+                Else
+                   cEscapeSequenz = " " & vbCrLf
+                End If
+                lAnzZeile = lAnzZeile + 1
+                ReDim Preserve cDruckZeile(1 To lAnzZeile) As String
+                cDruckZeile(lAnzZeile) = cEscapeSequenz
+            Next lcount
         
         End If
         
@@ -36279,7 +36281,7 @@ Private Sub SendeDaten2DruckerPark(lLfdNr As Long)
     Dim cDaten                  As String
     Dim ctmp                    As String
     Dim cTmp2                   As String
-    Dim cMwst                   As String
+    Dim cMWST                   As String
     Dim cText                   As String
     Dim cMWSTzzgl               As String
     Dim aDeviceName             As String
@@ -36694,8 +36696,8 @@ StartPunkt:
             
             cFeld = Mid(cLBSatz, 72, 1)
             cDaten = cDaten & cFeld & "  "
-            cMwst = cFeld
-            cMWSTzzgl = cMwst
+            cMWST = cFeld
+            cMWSTzzgl = cMWST
             
             cFeld = Mid(cLBSatz, 14, 35)
             cFeld = Trim$(cFeld)
@@ -36819,11 +36821,11 @@ StartPunkt:
             '***********************************************
             'MWSt-Summe berechnen
             '***********************************************
-            If cMwst = "V" Then
+            If cMWST = "V" Then
                 dMWSt = dWert / (100 + gdMWStV)
                 dMWSt = dMWSt * gdMWStV
                 dMWStVoll = dMWStVoll + dMWSt
-            ElseIf cMwst = "E" Then
+            ElseIf cMWST = "E" Then
                dMWSt = dWert / (100 + gdMWStE)
                 dMWSt = dMWSt * gdMWStE
                 dMWStErm = dMWStErm + dMWSt
@@ -37190,7 +37192,7 @@ Private Sub SendeDaten2Drucker_ArtAuswahl(lLfdNr As Long)
     Dim cDaten                  As String
     Dim ctmp                    As String
     Dim cTmp2                   As String
-    Dim cMwst                   As String
+    Dim cMWST                   As String
     Dim cText                   As String
     Dim cMWSTzzgl               As String
     Dim aDeviceName             As String
@@ -37568,8 +37570,8 @@ StartPunkt:
             
             cFeld = Mid(cLBSatz, 72, 1)
             cDaten = cDaten & cFeld & "  "
-            cMwst = cFeld
-            cMWSTzzgl = cMwst
+            cMWST = cFeld
+            cMWSTzzgl = cMWST
             
             cFeld = Mid(cLBSatz, 14, 35)
             cFeld = Trim$(cFeld)
@@ -37689,11 +37691,11 @@ StartPunkt:
             '***********************************************
             'MWSt-Summe berechnen
             '***********************************************
-            If cMwst = "V" Then
+            If cMWST = "V" Then
                 dMWSt = dWert / (100 + gdMWStV)
                 dMWSt = dMWSt * gdMWStV
                 dMWStVoll = dMWStVoll + dMWSt
-            ElseIf cMwst = "E" Then
+            ElseIf cMWST = "E" Then
                dMWSt = dWert / (100 + gdMWStE)
                 dMWSt = dMWSt * gdMWStE
                 dMWStErm = dMWStErm + dMWSt
@@ -38044,7 +38046,7 @@ Private Sub SendeDaten2DruckerFleischer(lLfdNr As Long, cART As String, cBezeic 
     Dim cDaten                  As String
     Dim ctmp                    As String
     Dim cTmp2                   As String
-    Dim cMwst                   As String
+    Dim cMWST                   As String
     Dim cText                   As String
     Dim cMWSTzzgl               As String
     Dim aDeviceName             As String
@@ -38284,8 +38286,8 @@ StartPunkt:
             
             cFeld = Mid(cLBSatz, 72, 1)
             cDaten = cDaten & cFeld & "  "
-            cMwst = cFeld
-            cMWSTzzgl = cMwst
+            cMWST = cFeld
+            cMWSTzzgl = cMWST
             
             cFeld = Mid(cLBSatz, 14, 35)
             cFeld = Trim$(cFeld)
@@ -38403,11 +38405,11 @@ StartPunkt:
             '***********************************************
             'MWSt-Summe berechnen
             '***********************************************
-            If cMwst = "V" Then
+            If cMWST = "V" Then
                 dMWSt = dWert / (100 + gdMWStV)
                 dMWSt = dMWSt * gdMWStV
                 dMWStVoll = dMWStVoll + dMWSt
-            ElseIf cMwst = "E" Then
+            ElseIf cMWST = "E" Then
                dMWSt = dWert / (100 + gdMWStE)
                 dMWSt = dMWSt * gdMWStE
                 dMWStErm = dMWStErm + dMWSt
@@ -38917,7 +38919,7 @@ Private Sub SendeDaten2DruckerParknetto(lLfdNr As Long)
     Dim cDaten                  As String
     Dim ctmp                    As String
     Dim cTmp2                   As String
-    Dim cMwst                   As String
+    Dim cMWST                   As String
     Dim cText                   As String
     Dim cMWSTzzgl               As String
     Dim aDeviceName             As String
@@ -39150,8 +39152,8 @@ StartPunkt:
             
             cFeld = Mid(cLBSatz, 72, 1)
             cDaten = cDaten & cFeld & "  "
-            cMwst = cFeld 'hier mehrwertsteuer
-            cMWSTzzgl = cMwst
+            cMWST = cFeld 'hier mehrwertsteuer
+            cMWSTzzgl = cMWST
             
             cFeld = Mid(cLBSatz, 14, 35)
             cFeld = Trim$(cFeld)
@@ -39235,7 +39237,7 @@ StartPunkt:
                 dWert = Val(ctmp)
             End If
             
-            dWert = nettoR(dWert, cMwst)
+            dWert = nettoR(dWert, cMWST)
             ctmp = Format$(dWert, "#####0.00")
             
             ctmp = Space(11 - Len(ctmp)) & ctmp
@@ -39253,7 +39255,7 @@ StartPunkt:
             End If
 
             
-            dWert = nettoR(dWert, cMwst)
+            dWert = nettoR(dWert, cMWST)
             ctmp = Format$(dWert, "#####0.00")
             dSummeNetto = dSummeNetto + dWert
             
@@ -39271,11 +39273,11 @@ StartPunkt:
             '***********************************************
             'MWSt-Summe berechnen
             '***********************************************
-            If cMwst = "V" Then
+            If cMWST = "V" Then
                 dMWSt = dWert / (100 + gdMWStV)
                 dMWSt = dMWSt * gdMWStV
                 dMWStVoll = dMWStVoll + dMWSt
-            ElseIf cMwst = "E" Then
+            ElseIf cMWST = "E" Then
                dMWSt = dWert / (100 + gdMWStE)
                 dMWSt = dMWSt * gdMWStE
                 dMWStErm = dMWStErm + dMWSt
@@ -39817,7 +39819,7 @@ Private Sub SendeDaten2DruckerFleischernetto(lLfdNr As Long, cART As String, cBe
     Dim cDaten                  As String
     Dim ctmp                    As String
     Dim cTmp2                   As String
-    Dim cMwst                   As String
+    Dim cMWST                   As String
     Dim cText                   As String
     Dim cMWSTzzgl               As String
     Dim aDeviceName             As String
@@ -40062,8 +40064,8 @@ StartPunkt:
             
             cFeld = Mid(cLBSatz, 72, 1)
             cDaten = cDaten & cFeld & "  "
-            cMwst = cFeld 'hier mehrwertsteuer
-            cMWSTzzgl = cMwst
+            cMWST = cFeld 'hier mehrwertsteuer
+            cMWSTzzgl = cMWST
             
             cFeld = Mid(cLBSatz, 14, 35)
             cFeld = Trim$(cFeld)
@@ -40132,7 +40134,7 @@ StartPunkt:
             End If
             
             dWert = Format$(dWert, "#####0.00")
-            dWert = nettoR(dWert, cMwst)
+            dWert = nettoR(dWert, cMWST)
             dWert = Format$(dWert, "#####0.00")
             
             dSummeVoll = dSummeVoll + (dWert * lAnzahlArtikel)
@@ -40166,7 +40168,7 @@ StartPunkt:
             End If
 
             dWert = Format$(dWert, "#####0.00")
-            dWert = nettoR(dWert, cMwst)
+            dWert = nettoR(dWert, cMWST)
             dWert = Format$(dWert, "#####0.00")
             ctmp = Format$(dWert, "#####0.00")
             dSummeNetto = dSummeNetto + dWert
@@ -41215,7 +41217,7 @@ Private Sub SendeDaten2DruckerRetoureWKL20(sRetourengrund As String)
     Dim cDaten              As String
     Dim ctmp                As String
     Dim cTmp2               As String
-    Dim cMwst               As String
+    Dim cMWST               As String
     Dim cText               As String
     Dim aDeviceName         As String
     Dim cEscapeSequenz      As String
@@ -41465,7 +41467,7 @@ StartPunkt:
             cDaten = cFeld & " "
             cFeld = Mid(cLBSatz, 72, 1)
             cDaten = cDaten & cFeld & "  "
-            cMwst = cFeld
+            cMWST = cFeld
             cFeld = Mid(cLBSatz, 14, 35)
             cFeld = Trim$(cFeld)
             If Len(cFeld) > 17 Then
@@ -41526,11 +41528,11 @@ StartPunkt:
             'MWSt-Summe berechnen
             '***********************************************
     
-            If cMwst = "V" Then
+            If cMWST = "V" Then
                 dMWSt = dWert / (100 + gdMWStV)
                 dMWSt = dMWSt * gdMWStV
                 dMWStVoll = dMWStVoll + dMWSt
-            ElseIf cMwst = "E" Then
+            ElseIf cMWST = "E" Then
                dMWSt = dWert / (100 + gdMWStE)
                 dMWSt = dMWSt * gdMWStE
                 dMWStErm = dMWStErm + dMWSt
@@ -41938,7 +41940,7 @@ Private Sub SendeDaten2DruckerRückgabeWKL20()
     Dim cDaten              As String
     Dim ctmp                As String
     Dim cTmp2               As String
-    Dim cMwst               As String
+    Dim cMWST               As String
     Dim cText               As String
     Dim aDeviceName         As String
     Dim cEscapeSequenz      As String
@@ -42169,7 +42171,7 @@ StartPunkt:
             cDaten = cFeld & " "
             cFeld = Mid(cLBSatz, 72, 1)
             cDaten = cDaten & cFeld & "  "
-            cMwst = cFeld
+            cMWST = cFeld
             cFeld = Mid(cLBSatz, 14, 35)
             cFeld = Trim$(cFeld)
             If Len(cFeld) > 17 Then
@@ -42232,11 +42234,11 @@ StartPunkt:
             'MWSt-Summe berechnen
             '***********************************************
     
-            If cMwst = "V" Then
+            If cMWST = "V" Then
                 dMWSt = dWert / (100 + gdMWStV)
                 dMWSt = dMWSt * gdMWStV
                 dMWStVoll = dMWStVoll + dMWSt
-            ElseIf cMwst = "E" Then
+            ElseIf cMWST = "E" Then
                dMWSt = dWert / (100 + gdMWStE)
                 dMWSt = dMWSt * gdMWStE
                 dMWStErm = dMWStErm + dMWSt
@@ -42614,7 +42616,7 @@ Private Sub SendeDaten2DruckerALRWKL20(lfnr As Long)
     Dim cFeld               As String
     Dim cDaten              As String
     Dim ctmp                As String
-    Dim cMwst               As String
+    Dim cMWST               As String
 
     Dim aDeviceName         As String
     Dim cEscapeSequenz      As String
@@ -42838,7 +42840,7 @@ StartPunkt:
             cDaten = cFeld & " "
             cFeld = Mid(cLBSatz, 72, 1)
             cDaten = cDaten & cFeld & "  "
-            cMwst = cFeld
+            cMWST = cFeld
             cFeld = Mid(cLBSatz, 14, 35)
             cFeld = Trim$(cFeld)
             If Len(cFeld) > 17 Then
@@ -42901,11 +42903,11 @@ StartPunkt:
             'MWSt-Summe berechnen
             '***********************************************
     
-            If cMwst = "V" Then
+            If cMWST = "V" Then
                 dMWSt = dWert / (100 + gdMWStV)
                 dMWSt = dMWSt * gdMWStV
                 dMWStVoll = dMWStVoll + dMWSt
-            ElseIf cMwst = "E" Then
+            ElseIf cMWST = "E" Then
                dMWSt = dWert / (100 + gdMWStE)
                 dMWSt = dMWSt * gdMWStE
                 dMWStErm = dMWStErm + dMWSt
@@ -43271,7 +43273,7 @@ Private Sub SendeDaten2DruckerLastSchriftWKL20()
     Dim cDaten          As String
     Dim ctmp            As String
     Dim cTmp2           As String
-    Dim cMwst           As String
+    Dim cMWST           As String
     Dim cText           As String
     Dim aDeviceName     As String
     Dim cEscapeSequenz  As String
@@ -43697,7 +43699,7 @@ Private Sub SucheArtikelKasseWKL20()
     Dim cRabattier  As String
     Dim ctmp        As String
     Dim cArtNrExakt As String
-    Dim cMwst       As String
+    Dim cMWST       As String
     Dim cSQL        As String
     Dim cArtBez     As String
     Dim cArtNr      As String
@@ -44325,9 +44327,9 @@ Private Sub SucheArtikelKasseWKL20()
         Do While Not rsrs.EOF
             iStufe = 17
             If Not IsNull(rsrs!MWST) Then
-                cMwst = rsrs!MWST
+                cMWST = rsrs!MWST
             Else
-                cMwst = "V"
+                cMWST = "V"
             End If
             iStufe = 18
             If Not IsNull(rsrs!artnr) Then
@@ -44386,10 +44388,10 @@ Private Sub SucheArtikelKasseWKL20()
                             dKVkPr1 = 0
                         End If
                     End If
-                    If cMwst = "V" Then
+                    If cMWST = "V" Then
                         dKVkPr1 = dKVkPr1 * dFaktorV
                     End If
-                    If cMwst = "E" Then
+                    If cMWST = "E" Then
                         dKVkPr1 = dKVkPr1 * dFaktorE
                     End If
                     
@@ -44399,10 +44401,10 @@ Private Sub SucheArtikelKasseWKL20()
                     Else
                         dKVkPr1 = 0
                     End If
-                    If cMwst = "V" Then
+                    If cMWST = "V" Then
                         dKVkPr1 = dKVkPr1 * dFaktorV
                     End If
-                    If cMwst = "E" Then
+                    If cMWST = "E" Then
                         dKVkPr1 = dKVkPr1 * dFaktorE
                     End If
                 Case Is = 4 'Spez kvk
@@ -44434,10 +44436,10 @@ Private Sub SucheArtikelKasseWKL20()
                     Else
                         dKVkPr1 = 0
                     End If
-                    If cMwst = "V" Then
+                    If cMWST = "V" Then
                         dKVkPr1 = dKVkPr1 * 100 / (100 + gdMWStV)
                     End If
-                    If cMwst = "E" Then
+                    If cMWST = "E" Then
                         dKVkPr1 = dKVkPr1 * 100 / (100 + gdMWStE)
                     End If
             End Select
@@ -44588,7 +44590,7 @@ Private Sub ermweitereArtikel()
     Dim cRabattier  As String
     Dim ctmp        As String
     Dim cArtNrExakt As String
-    Dim cMwst       As String
+    Dim cMWST       As String
     Dim cSQL        As String
     Dim cArtBez     As String
     Dim cLiBesNr    As String
@@ -44877,9 +44879,9 @@ Private Sub ermweitereArtikel()
         Do While Not rsrs.EOF
             iStufe = 17
             If Not IsNull(rsrs!MWST) Then
-                cMwst = rsrs!MWST
+                cMWST = rsrs!MWST
             Else
-                cMwst = "V"
+                cMWST = "V"
             End If
             iStufe = 18
             If Not IsNull(rsrs!artnr) Then
@@ -44937,10 +44939,10 @@ Private Sub ermweitereArtikel()
                             dKVkPr1 = 0
                         End If
                     End If
-                    If cMwst = "V" Then
+                    If cMWST = "V" Then
                         dKVkPr1 = dKVkPr1 * dFaktorV
                     End If
-                    If cMwst = "E" Then
+                    If cMWST = "E" Then
                         dKVkPr1 = dKVkPr1 * dFaktorE
                     End If
                     
@@ -44950,10 +44952,10 @@ Private Sub ermweitereArtikel()
                     Else
                         dKVkPr1 = 0
                     End If
-                    If cMwst = "V" Then
+                    If cMWST = "V" Then
                         dKVkPr1 = dKVkPr1 * dFaktorV
                     End If
-                    If cMwst = "E" Then
+                    If cMWST = "E" Then
                         dKVkPr1 = dKVkPr1 * dFaktorE
                     End If
                 Case Is = 4 'Spez kvk
@@ -44986,10 +44988,10 @@ Private Sub ermweitereArtikel()
                     Else
                         dKVkPr1 = 0
                     End If
-                    If cMwst = "V" Then
+                    If cMWST = "V" Then
                         dKVkPr1 = dKVkPr1 * 100 / (100 + gdMWStV)
                     End If
-                    If cMwst = "E" Then
+                    If cMWST = "E" Then
                         dKVkPr1 = dKVkPr1 * 100 / (100 + gdMWStE)
                     End If
                 
@@ -45133,7 +45135,7 @@ Private Sub ermweitereArtikelT2()
     Dim cRabattier  As String
     Dim ctmp        As String
     Dim cArtNrExakt As String
-    Dim cMwst       As String
+    Dim cMWST       As String
     Dim cSQL        As String
     Dim cArtBez     As String
     Dim cLiBesNr    As String
@@ -45393,9 +45395,9 @@ Private Sub ermweitereArtikelT2()
         Do While Not rsrs.EOF
             iStufe = 17
             If Not IsNull(rsrs!MWST) Then
-                cMwst = rsrs!MWST
+                cMWST = rsrs!MWST
             Else
-                cMwst = "V"
+                cMWST = "V"
             End If
             iStufe = 18
             If Not IsNull(rsrs!artnr) Then
@@ -45453,10 +45455,10 @@ Private Sub ermweitereArtikelT2()
                             dKVkPr1 = 0
                         End If
                     End If
-                    If cMwst = "V" Then
+                    If cMWST = "V" Then
                         dKVkPr1 = dKVkPr1 * dFaktorV
                     End If
-                    If cMwst = "E" Then
+                    If cMWST = "E" Then
                         dKVkPr1 = dKVkPr1 * dFaktorE
                     End If
                     
@@ -45466,10 +45468,10 @@ Private Sub ermweitereArtikelT2()
                     Else
                         dKVkPr1 = 0
                     End If
-                    If cMwst = "V" Then
+                    If cMWST = "V" Then
                         dKVkPr1 = dKVkPr1 * dFaktorV
                     End If
-                    If cMwst = "E" Then
+                    If cMWST = "E" Then
                         dKVkPr1 = dKVkPr1 * dFaktorE
                     End If
                 Case Is = 4 'Spez kvk
@@ -45502,10 +45504,10 @@ Private Sub ermweitereArtikelT2()
                     Else
                         dKVkPr1 = 0
                     End If
-                    If cMwst = "V" Then
+                    If cMWST = "V" Then
                         dKVkPr1 = dKVkPr1 * 100 / (100 + gdMWStV)
                     End If
-                    If cMwst = "E" Then
+                    If cMWST = "E" Then
                         dKVkPr1 = dKVkPr1 * 100 / (100 + gdMWStE)
                     End If
                 
@@ -48251,7 +48253,7 @@ LOKAL_ERROR:
     Fehlermeldung1
 '    Resume Next
 End Sub
-Private Function ermittleEKforSpanne(lartnr As Long, sKVK As String, cMwst As String) As String
+Private Function ermittleEKforSpanne(lartnr As Long, sKVK As String, cMWST As String) As String
 On Error GoTo LOKAL_ERROR
 
     ermittleEKforSpanne = "0"
@@ -48280,13 +48282,13 @@ On Error GoTo LOKAL_ERROR
         If sEKpr = "0" Then
             If lartnr = 666668 Or lartnr = 666669 Then
                 If gdZeitungsSpanne <> 0 Then
-                    sEKpr = CStr(EKausNettospanneerrechnen(gdZeitungsSpanne, CDbl(sKVK), cMwst))
+                    sEKpr = CStr(EKausNettospanneerrechnen(gdZeitungsSpanne, CDbl(sKVK), cMWST))
                 End If
             Else
             
                 dSpanne = ermSpanne(lartnr)
                 If dSpanne <> 0 Then
-                    sEKpr = CStr(EKausNettospanneerrechnen(dSpanne, CDbl(sKVK), cMwst))
+                    sEKpr = CStr(EKausNettospanneerrechnen(dSpanne, CDbl(sKVK), cMWST))
                 End If
             End If
         End If
@@ -48315,12 +48317,12 @@ On Error GoTo LOKAL_ERROR
         If sEKpr = "0" Then
             If lartnr = 666668 Or lartnr = 666669 Then
                 If gdZeitungsSpanne <> 0 Then
-                    sEKpr = CStr(EKausNettospanneerrechnen(gdZeitungsSpanne, CDbl(sKVK), cMwst))
+                    sEKpr = CStr(EKausNettospanneerrechnen(gdZeitungsSpanne, CDbl(sKVK), cMWST))
                 End If
             Else
                 dSpanne = ermSpanne(lartnr)
                 If dSpanne <> 0 Then
-                    sEKpr = CStr(EKausNettospanneerrechnen(dSpanne, CDbl(sKVK), cMwst))
+                    sEKpr = CStr(EKausNettospanneerrechnen(dSpanne, CDbl(sKVK), cMWST))
                 End If
             End If
         
@@ -48369,7 +48371,7 @@ LOKAL_ERROR:
     Fehlermeldung1
 End Function
 
-Private Sub Handelsspanne_anzeigen(sArt As String, cMwst As String, sKVK As String)
+Private Sub Handelsspanne_anzeigen(sArt As String, cMWST As String, sKVK As String)
 On Error GoTo LOKAL_ERROR
 
     'Handelsspanne anzeigen
@@ -48434,13 +48436,13 @@ On Error GoTo LOKAL_ERROR
         If sEKpr = "0" Then
             If sArt = "666668" Or sArt = "666669" Then
                 If gdZeitungsSpanne <> 0 Then
-                    sEKpr = CStr(EKausNettospanneerrechnen(gdZeitungsSpanne, CDbl(sKVK), cMwst))
+                    sEKpr = CStr(EKausNettospanneerrechnen(gdZeitungsSpanne, CDbl(sKVK), cMWST))
                 End If
             Else
             
                 dSpanne = ermSpanne(CLng(sArt))
                 If dSpanne <> 0 Then
-                    sEKpr = CStr(EKausNettospanneerrechnen(dSpanne, CDbl(sKVK), cMwst))
+                    sEKpr = CStr(EKausNettospanneerrechnen(dSpanne, CDbl(sKVK), cMWST))
                 End If
             
             
@@ -48462,7 +48464,7 @@ On Error GoTo LOKAL_ERROR
         End If
         rsrs.Close
         
-        sNettospanne = NettospanneInProzent(sKVK, sEKpr, cMwst)
+        sNettospanne = NettospanneInProzent(sKVK, sEKpr, cMWST)
         dNettospanne = CDbl(sNettospanne)
         
         If dNettospanne >= 100 Then
@@ -48544,7 +48546,7 @@ On Error GoTo LOKAL_ERROR
             End If
             rsrs.Close
             
-            sNettospanne = NettospanneInProzent(sKVK, sEKpr, cMwst)
+            sNettospanne = NettospanneInProzent(sKVK, sEKpr, cMWST)
             dNettospanne = CDbl(sNettospanne)
             
             If dNettospanne >= 100 Then
@@ -48602,18 +48604,18 @@ On Error GoTo LOKAL_ERROR
         If sEKpr = "0" Then
             If sArt = "666668" Or sArt = "666669" Then
                 If gdZeitungsSpanne <> 0 Then
-                    sEKpr = CStr(EKausNettospanneerrechnen(gdZeitungsSpanne, CDbl(sKVK), cMwst))
+                    sEKpr = CStr(EKausNettospanneerrechnen(gdZeitungsSpanne, CDbl(sKVK), cMWST))
                 End If
             Else
                 dSpanne = ermSpanne(CLng(sArt))
                 If dSpanne <> 0 Then
-                    sEKpr = CStr(EKausNettospanneerrechnen(dSpanne, CDbl(sKVK), cMwst))
+                    sEKpr = CStr(EKausNettospanneerrechnen(dSpanne, CDbl(sKVK), cMWST))
                 End If
             End If
         
         End If
         
-        sNettospanne = NettospanneInProzent(sKVK, sEKpr, cMwst)
+        sNettospanne = NettospanneInProzent(sKVK, sEKpr, cMWST)
         dNettospanne = CDbl(sNettospanne)
         
         If dNettospanne >= 100 Then
@@ -61803,18 +61805,23 @@ On Error GoTo LOKAL_ERROR
     Dim searchstr As String
 
     If index = 3 Then
-        If Len(Text3(3).Text) >= 8 Then
-            If IsNumeric(Text3(3).Text) = False Then
-                SucheKundenKasseWKL20Alphas Text3(3).Text
-            End If
-        End If
-        
-        If Label1(27).Caption = "Karte/KdNr/Name" Then
-            If Len(Text3(3).Text) >= 5 Then
-                fillecbo Text3(3).Text, Combo1
-            End If
-        End If
-        
+    
+    'Oday <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< START
+    
+'        If Len(Text3(3).Text) >= 8 Then
+'            If IsNumeric(Text3(3).Text) = False Then
+'                SucheKundenKasseWKL20Alphas Text3(3).Text
+'            End If
+'        End If
+'
+'        If Label1(27).Caption = "Karte/KdNr/Name" Then
+'            If Len(Text3(3).Text) >= 5 Then
+'                fillecbo Text3(3).Text, Combo1
+'            End If
+'        End If
+
+    'Oday <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ENDE
+    
     End If
     
     If index = 5 Then
@@ -63267,125 +63274,116 @@ Private Sub Text1_KeyUp(index As Integer, KeyCode As Integer, Shift As Integer)
                     Exit Sub
                 End If
                 
-                If KeyCode = vbKeyF2 Then                   'Taste F2 EC-Lastschrift
-                    Command1_Click 0
-                    Exit Sub
-                End If
+'                If KeyCode = vbKeyF2 Then                   'Taste F2 EC-Lastschrift
+'                    Command1_Click 0
+'                    Exit Sub
+'                End If
                 
                 
-                If KeyCode = vbKeyF3 Then                   'Taste F3 Kundensuche
-                    Command1_Click 1
-                    Exit Sub
-                End If
+'                If KeyCode = vbKeyF3 Then                   'Taste F3 Kundensuche
+'                    Command1_Click 1
+'                    Exit Sub
+'                End If
                 
-                If KeyCode = vbKeyF4 Then                   'Taste F4 SonPr
-                    Command1_Click 2
-                    Exit Sub
-                End If
+'                If KeyCode = vbKeyF4 Then                   'Taste F4 SonPr
+'                    Command1_Click 2
+'                    Exit Sub
+'                End If
                 
-                If KeyCode = vbKeyF5 Then                   'Taste F5 GesRab
-                    Command1_Click 3
-                    Exit Sub
-                End If
+'                If KeyCode = vbKeyF5 Then                   'Taste F5 GesRab
+'                    Command1_Click 3
+'                    Exit Sub
+'                End If
                 
-                If KeyCode = vbKeyF6 Then                   'Taste F6 ArtRab
-                    Command1_Click 4
-                    Exit Sub
-                End If
+'                If KeyCode = vbKeyF6 Then                   'Taste F6 ArtRab
+'                    Command1_Click 4
+'                    Exit Sub
+'                End If
                 
-                If KeyCode = vbKeyF7 Then                   'Taste F7 Kreditkarte
-                    Command1_Click 17
-                    Exit Sub
-                End If
+'                If KeyCode = vbKeyF7 Then                   'Taste F7 Kreditkarte
+'                    Command1_Click 17
+'                    Exit Sub
+'                End If
                 
-                If KeyCode = vbKeyF8 Then                   'Taste F8 Scheck
-                    Command1_Click 6
-                    Exit Sub
-                End If
+'                If KeyCode = vbKeyF8 Then                   'Taste F8 Scheck
+'                    Command1_Click 6
+'                    Exit Sub
+'                End If
                 
-                If KeyCode = vbKeyF9 Then                   'Taste F9 Zahlung per Gutschein
-                    Command1_Click 15
-                    Exit Sub
-                End If
+'                If KeyCode = vbKeyF9 Then                   'Taste F9 Zahlung per Gutschein
+'                    Command1_Click 15
+'                    Exit Sub
+'                End If
                 
                 
-                If KeyCode = vbKeyF10 Then                  'Taste F10 Barverkauf
-                    Command1_Click 8
-                    '//new
-                    Frame23.Visible = False
-                    Exit Sub
-                End If
+'                If KeyCode = vbKeyF10 Then                  'Taste F10 Barverkauf
+'                    Command1_Click 8
+'                    '//new
+'                    Frame23.Visible = False
+'                    Exit Sub
+'                End If
             
-                If KeyCode = vbKeyDelete Then               'Taste F10 Barverkauf
-                    Label2(5).Caption = "1"
-                    Text1(1).Text = ""
-                    Exit Sub
-                End If
+'                If KeyCode = vbKeyDelete Then               'Taste F10 Barverkauf
+'                    Label2(5).Caption = "1"
+'                    Text1(1).Text = ""
+'                    Exit Sub
+'                End If
                 
-'''''                If KeyCode = vbKeyF11 Then                   'Taste F11 Spezi Bon
-'''''                    spezi_bon_drucken
-'''''                    Exit Sub
-'''''                End If
             
             
             Case Is = 1     'SHIFT ist gedrückt
             
-                If KeyCode = vbKeyF1 Then               'Taste Shift + F1 = Auszahlung
-                    Command1_Click 45
-                    Exit Sub
-                End If
+'                If KeyCode = vbKeyF1 Then               'Taste Shift + F1 = Auszahlung
+'                    Command1_Click 45
+'                    Exit Sub
+'                End If
                 
-                If KeyCode = vbKeyF2 Then               'Taste Shift + F2 Einzahlung
-                    Command1_Click 46
-                    Exit Sub
-                End If
+'                If KeyCode = vbKeyF2 Then               'Taste Shift + F2 Einzahlung
+'                    Command1_Click 46
+'                    Exit Sub
+'                End If
                 
-                If KeyCode = vbKeyF3 Then               'Taste Shift + F3 Ende
-                    Command1_Click 11
-                    Exit Sub
-                End If
+'                If KeyCode = vbKeyF3 Then               'Taste Shift + F3 Ende
+'                    Command1_Click 11
+'                    Exit Sub
+'                End If
                 
-                If KeyCode = vbKeyF5 Then               'Taste Shift + F5 2.Bon
-                    Command1_Click 34
-                    Exit Sub
-                End If
+'                If KeyCode = vbKeyF5 Then               'Taste Shift + F5 2.Bon
+'                    Command1_Click 34
+'                    Exit Sub
+'                End If
                 
-                If KeyCode = vbKeyF7 Then               'Taste Shift + F7 Bon ein/Bon aus
-                    Command1_Click 12
-                    Exit Sub
-                End If
+'                If KeyCode = vbKeyF7 Then               'Taste Shift + F7 Bon ein/Bon aus
+'                    Command1_Click 12
+'                    Exit Sub
+'                End If
                 
-                If KeyCode = vbKeyF8 Then               'Taste Shift + F8 Vk Gutschein
-                    Command1_Click 14
-                    Exit Sub
-                End If
+'                If KeyCode = vbKeyF8 Then               'Taste Shift + F8 Vk Gutschein
+'                    Command1_Click 14
+'                    Exit Sub
+'                End If
                 
-                If KeyCode = vbKeyF9 Then               'Taste Shift + F9 Artikelsuche
-                    Command1_Click 16
-                    Exit Sub
-                End If
+'                If KeyCode = vbKeyF9 Then               'Taste Shift + F9 Artikelsuche
+'                    Command1_Click 16
+'                    Exit Sub
+'                End If
                 
-                If KeyCode = vbKeyF10 Then              'Taste Shift + F10 BAR
-                    Command1_Click 32
-                    Exit Sub
-                End If
+'                If KeyCode = vbKeyF10 Then              'Taste Shift + F10 BAR
+'                    Command1_Click 32
+'                    Exit Sub
+'                End If
                 
-                If KeyCode = vbKeyF11 Then              'Taste Shift + F11 Position
-                    
-'                    If List3.SelectedItem Is Nothing Then
-                        List3.SetFocus
-'                    Else
-                    
-'                    End If
-                    gbAutomaticClick = False
-                    List3_Click
-                    Exit Sub
-                End If
+'                If KeyCode = vbKeyF11 Then              'Taste Shift + F11 Position
+'                    List3.SetFocus
+'                    gbAutomaticClick = False
+'                    List3_Click
+'                    Exit Sub
+'                End If
                 
-                If KeyCode = vbKeyF12 Then              'Taste Shift + F12 unterbrech
-                    Command1_Click 9
-                    Exit Sub
-                End If
+'                If KeyCode = vbKeyF12 Then              'Taste Shift + F12 unterbrech
+'                    Command1_Click 9
+'                    Exit Sub
+'                End If
             
                 
             Case Is = 2     'STRG ist gedrückt
@@ -63401,61 +63399,62 @@ Private Sub Text1_KeyUp(index As Integer, KeyCode As Integer, Shift As Integer)
                 MsgBox "3 = SHIFT + STRG"
                 
             Case Is = 4     'ALT ist gedrückt
-                If KeyCode = vbKeyF1 Then               'Taste Alt + F1 WG1
-                    Command1_Click 18
-                    Exit Sub
-                End If
-                
-                If KeyCode = vbKeyF2 Then               'Taste Alt + F2 WG2
-                    Command1_Click 19
-                    Exit Sub
-                End If
-                
-                If KeyCode = vbKeyF3 Then               'Taste Alt + F3 WG3
-                    Command1_Click 20
-                    Exit Sub
-                End If
-                
-                If KeyCode = vbKeyF4 Then               'Taste Alt + F4 WG4
-                    Command1_Click 21
-                    Exit Sub
-                End If
-                
-                If KeyCode = vbKeyF5 Then               'Taste Alt + F5 WG5
-                    Command1_Click 22
-                    Exit Sub
-                End If
-
-                
-                If KeyCode = vbKeyF7 Then               'Taste Alt + F7 WG7
-                    Command1_Click 24
-                    Exit Sub
-                End If
-                
-                If KeyCode = vbKeyF8 Then               'Taste Alt + F8 WG8
-                    Command1_Click 25
-                    Exit Sub
-                End If
-                
-                If KeyCode = vbKeyF9 Then               'Taste Alt + F9 WG9
-                    Command1_Click 26
-                    Exit Sub
-                End If
-                
-                If KeyCode = vbKeyF10 Then              'Taste Alt + F10 WG10
-                    Command1_Click 27
-                    Exit Sub
-                End If
-                
-                If KeyCode = vbKeyF11 Then               'Taste Alt + F11 WG11
-                    Command1_Click 28
-                    Exit Sub
-                End If
-                
-                If KeyCode = vbKeyF12 Then              'Taste Alt + F12 WG12
-                    Command1_Click 29
-                    Exit Sub
-                End If
+            
+'                If KeyCode = vbKeyF1 Then               'Taste Alt + F1 WG1
+'                    Command1_Click 18
+'                    Exit Sub
+'                End If
+'
+'                If KeyCode = vbKeyF2 Then               'Taste Alt + F2 WG2
+'                    Command1_Click 19
+'                    Exit Sub
+'                End If
+'
+'                If KeyCode = vbKeyF3 Then               'Taste Alt + F3 WG3
+'                    Command1_Click 20
+'                    Exit Sub
+'                End If
+'
+'                If KeyCode = vbKeyF4 Then               'Taste Alt + F4 WG4
+'                    Command1_Click 21
+'                    Exit Sub
+'                End If
+'
+'                If KeyCode = vbKeyF5 Then               'Taste Alt + F5 WG5
+'                    Command1_Click 22
+'                    Exit Sub
+'                End If
+'
+'
+'                If KeyCode = vbKeyF7 Then               'Taste Alt + F7 WG7
+'                    Command1_Click 24
+'                    Exit Sub
+'                End If
+'
+'                If KeyCode = vbKeyF8 Then               'Taste Alt + F8 WG8
+'                    Command1_Click 25
+'                    Exit Sub
+'                End If
+'
+'                If KeyCode = vbKeyF9 Then               'Taste Alt + F9 WG9
+'                    Command1_Click 26
+'                    Exit Sub
+'                End If
+'
+'                If KeyCode = vbKeyF10 Then              'Taste Alt + F10 WG10
+'                    Command1_Click 27
+'                    Exit Sub
+'                End If
+'
+'                If KeyCode = vbKeyF11 Then               'Taste Alt + F11 WG11
+'                    Command1_Click 28
+'                    Exit Sub
+'                End If
+'
+'                If KeyCode = vbKeyF12 Then              'Taste Alt + F12 WG12
+'                    Command1_Click 29
+'                    Exit Sub
+'                End If
                 
                 If KeyCode = 70 Then              'Taste Alt + F Filialtausch
                     Command1_Click 48

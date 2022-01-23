@@ -402,36 +402,42 @@ Public Function ermNextWochendatei() As Integer
     ermNextWochendatei = 0
     
     
+    'alte <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< START
+            
+        '    sSQL = "Select max(KW) as maxi from MASTERPRO where jahr = " & Year(Now)
+        '    Set rsrs = gdBase.OpenRecordset(sSQL)
+        '    If Not rsrs.EOF Then
+        '        If Not IsNull(rsrs!maxi) Then
+        '            ermNextWochendatei = rsrs!maxi
+        '        End If
+        '    End If
+        '    rsrs.Close: Set rsrs = Nothing
+        '
+        '    If ermNextWochendatei = 0 Then
+        '        'aktuelle KW wird benötigt
+        '
+        '        ermNextWochendatei = CInt(DatePart("ww", DateValue(Now)))
+        '        If Year(Now) = "2016" Then
+        '            ermNextWochendatei = ermNextWochendatei - 1
+        '
+        '        End If
+        '
+        '        Exit Function
+        '    End If
+        '
+        '
+        '    If ermNextWochendatei = 53 Then
+        '        ermNextWochendatei = 1
+        '    Else
+        '        ermNextWochendatei = ermNextWochendatei + 1
+        '    End If
+
+    'alte <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ENDE
     
-    sSQL = "Select max(KW) as maxi from MASTERPRO where jahr = " & Year(Now)
-    Set rsrs = gdBase.OpenRecordset(sSQL)
-    If Not rsrs.EOF Then
-        If Not IsNull(rsrs!maxi) Then
-            ermNextWochendatei = rsrs!maxi
-        End If
-    End If
-    rsrs.Close: Set rsrs = Nothing
+    'neue <<<<<<<<<<<< START
+     ermNextWochendatei = CInt(DatePart("ww", DateValue(Now), vbMonday, vbFirstFourDays))
+    'neue <<<<<<<<<<<< ENDE
     
-    If ermNextWochendatei = 0 Then
-        'aktuelle KW wird benötigt
-        
-        ermNextWochendatei = CInt(DatePart("ww", DateValue(Now)))
-        If Year(Now) = "2016" Then
-            ermNextWochendatei = ermNextWochendatei - 1
-        
-        End If
-        
-        Exit Function
-    End If
-    
-    
-    If ermNextWochendatei = 53 Then
-        ermNextWochendatei = 1
-    Else
-        ermNextWochendatei = ermNextWochendatei + 1
-    End If
-    
-        
     Exit Function
 LOKAL_ERROR:
 
@@ -1604,7 +1610,7 @@ Dim rsrs As Recordset
 
 Dim dFaktorV    As Double
 Dim dFaktorE    As Double
-Dim cMwst       As String
+Dim cMWST       As String
     
 dFaktorV = 1 + (gdMWStV / 100)
 dFaktorE = 1 + (gdMWStE / 100)
@@ -1619,9 +1625,9 @@ If IsNumeric(cArtNr) Then
         rsrs.MoveFirst
         
         If Not IsNull(rsrs!MWST) Then
-            cMwst = rsrs!MWST
+            cMWST = rsrs!MWST
         Else
-            cMwst = "V"
+            cMWST = "V"
         End If
         
         Select Case iPreizKZ
@@ -1645,20 +1651,20 @@ If IsNumeric(cArtNr) Then
                     End If
                 End If
                 
-                If cMwst = "V" Then
+                If cMWST = "V" Then
                     ermPreisMitPreisZK = ermPreisMitPreisZK * dFaktorV
                 End If
-                If cMwst = "E" Then
+                If cMWST = "E" Then
                     ermPreisMitPreisZK = ermPreisMitPreisZK * dFaktorE
                 End If
             Case Is = 3
                 If Not IsNull(rsrs!ekpr) Then
                     ermPreisMitPreisZK = rsrs!ekpr
                 End If
-                If cMwst = "V" Then
+                If cMWST = "V" Then
                     ermPreisMitPreisZK = ermPreisMitPreisZK * dFaktorV
                 End If
-                If cMwst = "E" Then
+                If cMWST = "E" Then
                     ermPreisMitPreisZK = ermPreisMitPreisZK * dFaktorE
                 End If
             Case Is = 4 'Spez kvk
@@ -4390,7 +4396,7 @@ Public Function BistDualleineinderDatenbank() As Boolean
         
 
 
-    Exit Function
+0    Exit Function
 LOKAL_ERROR:
     If err.Number = 3356 Then  'Or err.Number = 3050
 
@@ -4690,7 +4696,7 @@ Public Sub Insert_Kassjour(sArtnr As String, lMenge As Long, cUhrZeit As String,
     Dim lagn As Long
     Dim lLpz As Long
     Dim cEAN As String
-    Dim cMwst As String
+    Dim cMWST As String
     Dim cUmsOK As String
     Dim dMoPreis As Double
     
@@ -4700,7 +4706,7 @@ Public Sub Insert_Kassjour(sArtnr As String, lMenge As Long, cUhrZeit As String,
     lagn = 0
     lLpz = 0
     cEAN = ""
-    cMwst = "V"
+    cMWST = "V"
     cUmsOK = "J"
     cBezeich = ""
     
@@ -4721,7 +4727,7 @@ Public Sub Insert_Kassjour(sArtnr As String, lMenge As Long, cUhrZeit As String,
         End If
         
         If Not IsNull(rsrs!MWST) Then
-            cMwst = rsrs!MWST
+            cMWST = rsrs!MWST
         End If
         
         If Not IsNull(rsrs!EAN) Then
@@ -4818,7 +4824,7 @@ Public Sub Insert_Kassjour(sArtnr As String, lMenge As Long, cUhrZeit As String,
     cSQL = cSQL & " , " & lLpz & " "
     cSQL = cSQL & " , " & lagn & " "
     cSQL = cSQL & " , '" & cEAN & "' "
-    cSQL = cSQL & " , '" & cMwst & "' "
+    cSQL = cSQL & " , '" & cMWST & "' "
             
     cSQL = cSQL & " , '" & dLEKPR & "' "
     cSQL = cSQL & " , '" & cUmsOK & "' "
@@ -25725,7 +25731,7 @@ Public Sub AnmeldungDabaNew()
                 If FileExists(cPfad1 & "LPROTOK\Start.txt") Then
                 
                 Else
-                    frmWKL60.Show 1
+                    'frmWKL60.Show 1
                 End If
                 
                 loeschNEW "USERSAFE", SafeDB
@@ -25753,7 +25759,7 @@ Public Sub AnmeldungDabaNew()
             gcUmleittxt = gcUmleittxt & "Die Datenbank wird jetzt einer Routineüberprüfung unterzogen." & vbCrLf
             gcUmleittxt = gcUmleittxt & "Klicken Sie dazu auf 'Weiter'." & vbCrLf
             
-            frmWKL60.Show 1
+            'frmWKL60.Show 1
             
             AustrageninUSERSAFE sRechner, SafeDB
             EintrageninUSERSAFE sRechner, SafeDB
@@ -25852,7 +25858,7 @@ Public Sub AbmeldungDabaNew()
             
             
             
-            frmWKL60.Show 1
+            'frmWKL60.Show 1
             
         End If
         
@@ -46747,7 +46753,7 @@ Public Sub newGutschStrichcods()
         Dim lmaxforThisFil  As Long
         Dim lMax            As Long
         Dim lgu             As Long
-        Dim Ldiff           As Long
+        Dim lDiff           As Long
         Dim sMsg As String
         iStueck = InputBox("Wieviele Gutscheine wollen Sie drucken?", "Winkiss Eingabe:")
         
@@ -46756,7 +46762,7 @@ Public Sub newGutschStrichcods()
         lmaxforThisFil = MaxGutschein1(sFil)
         lgu = lGutsch
         
-        Ldiff = lmaxforThisFil - lGutsch
+        lDiff = lmaxforThisFil - lGutsch
         lMax = lgu + iStueck
         
         If lMax <= lmaxforThisFil Then
@@ -46764,7 +46770,7 @@ Public Sub newGutschStrichcods()
         Else
             Screen.MousePointer = 0
             sMsg = "Die gewünschte Anzahl ist nicht mehr verfügbar." & vbCrLf
-            sMsg = sMsg & "Es stehen noch " & Ldiff & " zur Verfügung." & vbCrLf
+            sMsg = sMsg & "Es stehen noch " & lDiff & " zur Verfügung." & vbCrLf
             sMsg = sMsg & "Bitte verringern Sie diese!"
             MsgBox sMsg, , "Winkiss Hinweis:"
             Exit Sub

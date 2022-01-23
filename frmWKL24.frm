@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{7D622DE6-0ABC-471E-9234-97DEC5E0A708}#3.8#0"; "sevCmd3.ocx"
-Object = "{5E9E78A0-531B-11CF-91F6-C2863C385E30}#1.0#0"; "MSFLXGRD.OCX"
+Object = "{5E9E78A0-531B-11CF-91F6-C2863C385E30}#1.0#0"; "msflxgrd.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Begin VB.Form frmWKL24 
    BackColor       =   &H00C0C000&
@@ -38,7 +38,7 @@ Begin VB.Form frmWKL24
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Height          =   1215
+      Height          =   1095
       Left            =   10560
       TabIndex        =   69
       Top             =   -120
@@ -660,12 +660,12 @@ Begin VB.Form frmWKL24
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Height          =   975
-      Left            =   11160
+      Height          =   1695
+      Left            =   10800
       TabIndex        =   27
-      Top             =   8400
+      Top             =   7680
       Visible         =   0   'False
-      Width           =   1095
+      Width           =   1455
       Begin sevCommand3.Command Command3 
          Height          =   615
          Index           =   5
@@ -2948,7 +2948,7 @@ SCHUBLADE:
                         schreibeProtokollUNITXT CStr(dGPreis), "Kartenzahlung"
                     End If
             End Select
-            rsrs!KASNUM = gcKasNum
+            rsrs!kasnum = gcKasNum
             rsrs!ADATE = lDatumJetzt
             
             
@@ -3456,7 +3456,7 @@ Private Sub AusbuchenKreditVerkaufWKL24ohneBon()
                         schreibeProtokollUNITXT CStr(dGPreis), "Kartenzahlung"
                     End If
             End Select
-            rsrs!KASNUM = gcKasNum
+            rsrs!kasnum = gcKasNum
             rsrs!ADATE = lDatumJetzt
             rsrs.Update
             rsrs.Close: Set rsrs = Nothing
@@ -3865,7 +3865,7 @@ Private Sub LeseKreditDetailsWKL24()
                 .Text = IIf(IsNull(rsrs!BEZEICH), "", rsrs!BEZEICH)
                 .Col = 4
                 iStufe = 26
-                .Text = IIf(IsNull(rsrs!MENGE), "", rsrs!MENGE)
+                .Text = IIf(IsNull(rsrs!Menge), "", rsrs!Menge)
                 .Col = 5
                 iStufe = 27
                 'Achtung Änderung f. Schlanstein 050907
@@ -4179,7 +4179,7 @@ Private Sub MoveDaten2RechnungWKL24(lAktRecord As Long, cReNr As String, dSumme 
     Dim cAnzahl As String
     Dim cEPreis As String
     Dim cGPreis As String
-    Dim cMwst As String
+    Dim cMWST As String
     Dim cKdnr As String
     Dim cPreisKz As String
     
@@ -4223,7 +4223,7 @@ Private Sub MoveDaten2RechnungWKL24(lAktRecord As Long, cReNr As String, dSumme 
     MSFlexGrid2.Col = 7
     ctmp = MSFlexGrid2.Text
     ctmp = fnMoveComma2Point$(ctmp)
-    cMwst = ctmp
+    cMWST = ctmp
     
     MSFlexGrid2.Col = 8
     ctmp = MSFlexGrid2.Text
@@ -4258,7 +4258,7 @@ Private Sub MoveDaten2RechnungWKL24(lAktRecord As Long, cReNr As String, dSumme 
     cSQL = cSQL & ", " & cAnzahl & ""
     cSQL = cSQL & ", " & cEPreis & ""
     cSQL = cSQL & ", " & cGPreis & ""
-    cSQL = cSQL & ", '" & cMwst & "' "
+    cSQL = cSQL & ", '" & cMWST & "' "
     cSQL = cSQL & ", " & cPreisKz & ""
     cSQL = cSQL & ", " & lreihenfolge & ""
     cSQL = cSQL & ") "
@@ -4873,7 +4873,7 @@ Private Sub SchreibeAltRechnungWKL24(bReFuss As Boolean)
                     
                         'bau mal eine Tabelle für die regulären KVK und ArtRab in Proz
     
-                        If Modul6.FindFile(gcDBPfad, "aWKL24m.rpt") And UCase(gsStammFTPUSER) = "HICKMANN" Then
+                        'If Modul6.FindFile(gcDBPfad, "aWKL24m.rpt") And UCase(gsStammFTPUSER) = "HICKMANN" Then
                              
                             cSQL = "Alter Table DRU_REPO add ARTRAB Double "
                             gdBase.Execute cSQL, dbFailOnError
@@ -4891,7 +4891,13 @@ Private Sub SchreibeAltRechnungWKL24(bReFuss As Boolean)
                             cSQL = "Update DRU_REPO SET Artrab = Artrab * (-1)  "
                             gdBase.Execute cSQL, dbFailOnError
                             
-                        End If
+                            'ARTRAB , KVKPR1 formatieren
+                            cSQL = "UPDATE DRU_REPO SET ARTRAB=FORMAT(ARTRAB,'0.00') where ARTRAB is not null"
+                            gdBase.Execute cSQL, dbFailOnError
+                            cSQL = "UPDATE DRU_REPO SET KVKPR1=FORMAT(KVKPR1,'0.00') where KVKPR1 is not null"
+                            gdBase.Execute cSQL, dbFailOnError
+                            
+                        'End If
                         
                         'Ende, bau mal eine Tabelle
                     
@@ -4936,6 +4942,33 @@ Private Sub SchreibeAltRechnungWKL24(bReFuss As Boolean)
                     End If
                 Case Is = "B"
                     If Modul6.FindFile(gcDBPfad, "aWKL24m.rpt") Then
+                     
+                          '''''''''''''''''''''''''''''''''''neu Odayy '''''''''''''''''''''''''''''''''''''''''
+                     
+                            cSQL = "Alter Table DRU_REPO add ARTRAB Double "
+                            gdBase.Execute cSQL, dbFailOnError
+                            
+                            cSQL = "Alter Table DRU_REPO add KVKPR1 Double "
+                            gdBase.Execute cSQL, dbFailOnError
+                            
+                            cSQL = "Update DRU_REPO inner join Artikel on DRU_REPO.Artnr = Artikel.Artnr "
+                            cSQL = cSQL & " Set DRU_REPO.KVKPR1 = Artikel.KVKPR1 "
+                            gdBase.Execute cSQL, dbFailOnError
+                            
+                            cSQL = "Update DRU_REPO SET Artrab = 100 - (EPREIS*100/kvkpr1) where kvkpr1 <> 0  "
+                            gdBase.Execute cSQL, dbFailOnError
+                            
+                            cSQL = "Update DRU_REPO SET Artrab = Artrab * (-1)  "
+                            gdBase.Execute cSQL, dbFailOnError
+                            
+                            'ARTRAB , KVKPR1 formatieren
+                            cSQL = "UPDATE DRU_REPO SET ARTRAB=FORMAT(ARTRAB,'0.00') where ARTRAB is not null"
+                            gdBase.Execute cSQL, dbFailOnError
+                            cSQL = "UPDATE DRU_REPO SET KVKPR1=FORMAT(KVKPR1,'0.00') where KVKPR1 is not null"
+                            gdBase.Execute cSQL, dbFailOnError
+                            
+                          '''''''''''''''''''''''''''''''''''neu Odayy '''''''''''''''''''''''''''''''''''''''''
+                            
                         reportbildschirm "spez5e", "aWKL24m"
                     Else
                         reportbildschirm "WKL005e", "awkl24c"
@@ -5798,9 +5831,7 @@ Private Sub SchreibeDatenInRechnungWKL24(bReFuss As Boolean)
             End If
         Case Is = "B"
             If Modul6.FindFile(gcDBPfad, "aWKL24m.rpt") Then
-            
-            
-                
+             
     
                 'If Modul6.FindFile(gcDBPfad, "aWKL24m.rpt") And UCase(gsStammFTPUSER) = "HICKMANN" Then
                      
@@ -5823,7 +5854,9 @@ Private Sub SchreibeDatenInRechnungWKL24(bReFuss As Boolean)
                     gdBase.Execute cSQL, dbFailOnError
                     
                     'ARTRAB , KVKPR1 formatieren
-                    cSQL = "UPDATE DRU_REPO SET ARTRAB=FORMAT(ARTRAB,'0.00') , KVKPR1=FORMAT(KVKPR1,'0.00')"
+                    cSQL = "UPDATE DRU_REPO SET ARTRAB=FORMAT(ARTRAB,'0.00') where ARTRAB is not null"
+                    gdBase.Execute cSQL, dbFailOnError
+                    cSQL = "UPDATE DRU_REPO SET KVKPR1=FORMAT(KVKPR1,'0.00') where KVKPR1 is not null"
                     gdBase.Execute cSQL, dbFailOnError
            
            
@@ -6643,7 +6676,7 @@ Private Sub ExportCSV()
    
     Screen.MousePointer = 11
     
-    anzeige "normal", "Exportdatei wird erstellt...", Label1(8)
+    anzeige "normal", "Exportdatei wird erstellt...", label1(8)
     
     cPfad1 = gcDBPfad      'dbpfad
     If Right(cPfad1, 1) <> "\" Then
@@ -6741,9 +6774,9 @@ Private Sub ExportCSV()
         Else
             MsgBox "Diese Datei ist unter (" & cPfad1 & "BOX) mit dem Namen: " & sAusgabedatname & " abgespeichert", vbInformation, "Winkiss Information:"
         End If
-        anzeige "normal", "", Label1(8)
+        anzeige "normal", "", label1(8)
     Else
-        anzeige "rot", "Keine Daten zum Export vorhanden.", Label1(8)
+        anzeige "rot", "Keine Daten zum Export vorhanden.", label1(8)
     End If
     
     Screen.MousePointer = 0

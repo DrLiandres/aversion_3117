@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{7D622DE6-0ABC-471E-9234-97DEC5E0A708}#3.8#0"; "sevCmd3.ocx"
-Object = "{00025600-0000-0000-C000-000000000046}#5.2#0"; "Crystl32.OCX"
+Object = "{00025600-0000-0000-C000-000000000046}#5.2#0"; "CRYSTL32.OCX"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Begin VB.Form frmWKL00 
    BackColor       =   &H00E0E0E0&
@@ -24,10 +24,11 @@ Begin VB.Form frmWKL00
    ScaleWidth      =   11880
    StartUpPosition =   2  'Bildschirmmitte
    Begin VB.CommandButton Command15 
-      Caption         =   "Command15"
+      Caption         =   "Test"
       Height          =   375
       Left            =   10200
       TabIndex        =   218
+      Tag             =   "oday"
       Top             =   1560
       Visible         =   0   'False
       Width           =   1095
@@ -8174,11 +8175,11 @@ Begin VB.Form frmWKL00
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Height          =   375
+      Height          =   615
       Left            =   4200
       TabIndex        =   59
       ToolTipText     =   "Einstellungen"
-      Top             =   3840
+      Top             =   3120
       Visible         =   0   'False
       Width           =   255
       Begin sevCommand3.Command Command9 
@@ -13269,14 +13270,38 @@ Private Sub LeseMWStSaetzeWKL00()
     
     Dim cSQL    As String
     Dim rsrs    As Recordset
+    Dim UstId As Integer
     
-    'zuerst check, ob die Tabelle MWSTSATZ schon erweitert wurde
-     If SpalteInTabellegefundenNEW("MWSTSATZ", "id", gdBase) = False Then
+    'check, ob die Tabelle MWSTSATZ zum zweiten mal schon erweitert wurde
+     If SpalteInTabellegefundenNEW("MWSTSATZ", "vonD", gdBase) = False Then
+     
+         'check, ob die Tabelle MWSTSATZ zum ersten mal schon erweitert wurde
+         If SpalteInTabellegefundenNEW("MWSTSATZ", "id", gdBase) Then
+            'die erste Erweiterung abbrechen
+            cSQL = "DELETE FROM MWSTSATZ"
+            gdBase.Execute cSQL, dbFailOnError
+            
+            cSQL = "Alter table MWSTSATZ drop column id"
+            gdBase.Execute cSQL, dbFailOnError
+            
+            cSQL = "Alter table MWSTSATZ drop column FurJahr"
+            gdBase.Execute cSQL, dbFailOnError
          
+         Else
+            'MWSTSATZ wurde vorher nie erweitert, deswegen alle Datensätze davon in Vorbereitung auf der Erweiterung entfernen
+            cSQL = "DELETE FROM MWSTSATZ"
+            gdBase.Execute cSQL, dbFailOnError
+            
+         End If
+         
+         'MWSTSATZ erweitern
          cSQL = "Alter table MWSTSATZ add column id NUMBER"
          gdBase.Execute cSQL, dbFailOnError
          
-         cSQL = "Alter table MWSTSATZ add column FurJahr NUMBER"
+         cSQL = "Alter table MWSTSATZ add column vonD DATE"
+         gdBase.Execute cSQL, dbFailOnError
+         
+         cSQL = "Alter table MWSTSATZ add column bisD DATE"
          gdBase.Execute cSQL, dbFailOnError
          
          'MWST-Werte der vorherigen Jahren hinzufügen
@@ -13284,7 +13309,10 @@ Private Sub LeseMWStSaetzeWKL00()
          
      End If
     
-    cSQL = "Select * from MWSTSATZ WHERE FurJahr=" & Year(Date)
+    '01.01.2100 muss auf Null gesetzt werden, wenn dieses Datum von ExportFormular(DsFinvK) für Zwischenrechnen-Zwecks benutzt wurde
+    gdBase.Execute ("update MWSTSATZ set bisD=null where bisD=CDate('01.01.2100')")
+    
+    cSQL = "Select * from MWSTSATZ WHERE vonD>= CDate('" & Date & "') AND bisD<= CDate('" & Date & "') AND bisD <> NULL"
     Set rsrs = gdBase.OpenRecordset(cSQL)
     If Not rsrs.EOF Then
         If Not IsNull(rsrs!VOLL) Then
@@ -13292,41 +13320,92 @@ Private Sub LeseMWStSaetzeWKL00()
         Else
             gdMWStV = 0
         End If
+        
         If Not IsNull(rsrs!ERM) Then
             gdMWStE = rsrs!ERM
         Else
             gdMWStE = 0
         End If
+        
         If Not IsNull(rsrs!OHNE) Then
             gdMWStO = rsrs!OHNE
         Else
             gdMWStO = 0
         End If
+        
+        If Not IsNull(rsrs!id) Then
+            UstId = rsrs!id
+        Else
+            UstId = 0
+        End If
+        
     Else
-        gdMWStV = 0
-        gdMWStE = 0
-        gdMWStO = 0
-        MsgBox "Es konnten keine MWST-Sätze gelesen werden!", vbCritical, "Winkiss Hinweis:"
+      gdMWStV = 0
+      gdMWStE = 0
+      gdMWStO = 0
     End If
     rsrs.Close: Set rsrs = Nothing
     
+    
+    
+    cSQL = "Select * from MWSTSATZ WHERE CDate('" & Date & "')>= vonD AND bisD is NULL"
+    Set rsrs = gdBase.OpenRecordset(cSQL)
+    If Not rsrs.EOF Then
+    
+        If Not IsNull(rsrs!VOLL) Then
+            gdMWStV = rsrs!VOLL
+        Else
+            gdMWStV = 0
+        End If
+        
+        If Not IsNull(rsrs!ERM) Then
+            gdMWStE = rsrs!ERM
+        Else
+            gdMWStE = 0
+        End If
+        
+        If Not IsNull(rsrs!OHNE) Then
+            gdMWStO = rsrs!OHNE
+        Else
+            gdMWStO = 0
+        End If
+        
+        If Not IsNull(rsrs!id) Then
+            UstId = rsrs!id
+        Else
+            UstId = 0
+        End If
+    Else
+      gdMWStV = 0
+      gdMWStE = 0
+      gdMWStO = 0
+    End If
+    rsrs.Close: Set rsrs = Nothing
+    
+     If gdMWStV = 0 Then
+      MsgBox "Es konnten keine MWST-Sätze gelesen werden!", vbCritical, "Winkiss Hinweis:"
+     End If
+     
+    
     'Tabelle [MWSTSATZDiesesJahrs] erstellen und insertiere darin die Mwst.-Satz dieses Jahrs (dieser Schritt ist nötig für manche Reports wie z.b aWKL25ab.rpt, aWKL25ai.rpt)
     If Not NewTableSuchenDB("MWSTSATZDiesesJahrs", gdBase) Then
-    
-        cSQL = "SELECT top 1 FurJahr,VOLL,ERM,OHNE into MWSTSATZDiesesJahrs FROM MWSTSATZ order by FurJahr desc"
+
+        cSQL = "SELECT " & gdMWStV & " as VOLL," & gdMWStE & " as ERM," & gdMWStO & " as OHNE," & UstId & " as id into MWSTSATZDiesesJahrs"
         gdBase.Execute cSQL, dbFailOnError
-        
+
     Else
-    
+
         cSQL = "DROP TABLE MWSTSATZDiesesJahrs"
         gdBase.Execute cSQL, dbFailOnError
-        
-        cSQL = "SELECT top 1 FurJahr,VOLL,ERM,OHNE into MWSTSATZDiesesJahrs FROM MWSTSATZ order by FurJahr desc"
+
+        cSQL = "SELECT " & gdMWStV & " as VOLL," & gdMWStE & " as ERM," & gdMWStO & " as OHNE," & UstId & " as id into MWSTSATZDiesesJahrs"
         gdBase.Execute cSQL, dbFailOnError
-        
+
     End If
     
-         
+    '01.01.2100 muss auf Null gesetzt werden, weil dieses Datum nur in ExportFormular(DsFinvK) benutzt wird
+    gdBase.Execute ("update MWSTSATZ set bisD=null where bisD=CDate('01.01.2100')")
+    
 Exit Sub
 LOKAL_ERROR:
     Fehler.gsDescr = err.Description
@@ -13343,71 +13422,17 @@ Private Sub VorherigeMwstWerteHinzufugen()
     On Error GoTo LOKAL_ERROR
     
     Dim cSQL    As String
-    If NewTableSuchenDB("tmpMwst", gdBase) Then
-        cSQL = "DROP TABLE tmpMwst"
-        gdBase.Execute cSQL, dbFailOnError
-    End If
     
-    cSQL = "CREATE TABLE tmpMwst (id number,FurJahr number,VOLL number,ERM number, OHNE number)"
+    cSQL = "INSERT INTO MWSTSATZ (VOLL,ERM,OHNE,id,vonD,bisD)VALUES('16','7','0','1','01.04.1998','31.12.2006')"
     gdBase.Execute cSQL, dbFailOnError
     
-    cSQL = "INSERT INTO tmpMwst (id,FurJahr,VOLL,ERM,OHNE)VALUES ('1','2000','16','7','0')"
-    gdBase.Execute cSQL, dbFailOnError
-    cSQL = "INSERT INTO tmpMwst (id,FurJahr,VOLL,ERM,OHNE)VALUES ('2','2001','16','7','0')"
-    gdBase.Execute cSQL, dbFailOnError
-    cSQL = "INSERT INTO tmpMwst (id,FurJahr,VOLL,ERM,OHNE)VALUES ('3','2002','16','7','0')"
-    gdBase.Execute cSQL, dbFailOnError
-    cSQL = "INSERT INTO tmpMwst (id,FurJahr,VOLL,ERM,OHNE)VALUES ('4','2003','16','7','0')"
-    gdBase.Execute cSQL, dbFailOnError
-    cSQL = "INSERT INTO tmpMwst (id,FurJahr,VOLL,ERM,OHNE)VALUES ('5','2004','16','7','0')"
-    gdBase.Execute cSQL, dbFailOnError
-    cSQL = "INSERT INTO tmpMwst (id,FurJahr,VOLL,ERM,OHNE)VALUES ('6','2005','16','7','0')"
-    gdBase.Execute cSQL, dbFailOnError
-    cSQL = "INSERT INTO tmpMwst (id,FurJahr,VOLL,ERM,OHNE)VALUES ('7','2006','16','7','0')"
-    gdBase.Execute cSQL, dbFailOnError
-    cSQL = "INSERT INTO tmpMwst (id,FurJahr,VOLL,ERM,OHNE)VALUES ('8','2007','19','7','0')"
-    gdBase.Execute cSQL, dbFailOnError
-    cSQL = "INSERT INTO tmpMwst (id,FurJahr,VOLL,ERM,OHNE)VALUES ('9','2008','19','7','0')"
-    gdBase.Execute cSQL, dbFailOnError
-    cSQL = "INSERT INTO tmpMwst (id,FurJahr,VOLL,ERM,OHNE)VALUES ('10','2009','19','7','0')"
-    gdBase.Execute cSQL, dbFailOnError
-    cSQL = "INSERT INTO tmpMwst (id,FurJahr,VOLL,ERM,OHNE)VALUES ('11','2010','19','7','0')"
-    gdBase.Execute cSQL, dbFailOnError
-    cSQL = "INSERT INTO tmpMwst (id,FurJahr,VOLL,ERM,OHNE)VALUES ('12','2011','19','7','0')"
-    gdBase.Execute cSQL, dbFailOnError
-    cSQL = "INSERT INTO tmpMwst (id,FurJahr,VOLL,ERM,OHNE)VALUES ('13','2012','19','7','0')"
-    gdBase.Execute cSQL, dbFailOnError
-    cSQL = "INSERT INTO tmpMwst (id,FurJahr,VOLL,ERM,OHNE)VALUES ('14','2013','19','7','0')"
-    gdBase.Execute cSQL, dbFailOnError
-    cSQL = "INSERT INTO tmpMwst (id,FurJahr,VOLL,ERM,OHNE)VALUES ('15','2014','19','7','0')"
-    gdBase.Execute cSQL, dbFailOnError
-    cSQL = "INSERT INTO tmpMwst (id,FurJahr,VOLL,ERM,OHNE)VALUES ('16','2015','19','7','0')"
-    gdBase.Execute cSQL, dbFailOnError
-    cSQL = "INSERT INTO tmpMwst (id,FurJahr,VOLL,ERM,OHNE)VALUES ('17','2016','19','7','0')"
-    gdBase.Execute cSQL, dbFailOnError
-    cSQL = "INSERT INTO tmpMwst (id,FurJahr,VOLL,ERM,OHNE)VALUES ('18','2017','19','7','0')"
-    gdBase.Execute cSQL, dbFailOnError
-    cSQL = "INSERT INTO tmpMwst (id,FurJahr,VOLL,ERM,OHNE)VALUES ('19','2018','19','7','0')"
-    gdBase.Execute cSQL, dbFailOnError
-    cSQL = "INSERT INTO tmpMwst (id,FurJahr,VOLL,ERM,OHNE)VALUES ('20','2019','19','7','0')"
-    gdBase.Execute cSQL, dbFailOnError
-    cSQL = "INSERT INTO tmpMwst (id,FurJahr,VOLL,ERM,OHNE)VALUES ('21','2020','16','7','0')"
+    cSQL = "INSERT INTO MWSTSATZ (VOLL,ERM,OHNE,id,vonD,bisD)VALUES('19','7','0','2','01.01.2007','30.06.2020')"
     gdBase.Execute cSQL, dbFailOnError
     
-      
-    cSQL = "INSERT INTO tmpMwst SELECT * FROM MWSTSATZ"
+    cSQL = "INSERT INTO MWSTSATZ (VOLL,ERM,OHNE,id,vonD,bisD)VALUES('16','5','0','3','01.07.2020','31.12.2020')"
     gdBase.Execute cSQL, dbFailOnError
     
-    cSQL = "UPDATE tmpMwst SET id='22',FurJahr='" & Year(Date) & "' WHERE id IS NULL AND FurJahr IS NULL"
-    gdBase.Execute cSQL, dbFailOnError
-    
-    cSQL = "DELETE FROM MWSTSATZ"
-    gdBase.Execute cSQL, dbFailOnError
-     
-    cSQL = "INSERT INTO MWSTSATZ SELECT * FROM tmpMwst"
-    gdBase.Execute cSQL, dbFailOnError
-    
-    cSQL = "DROP TABLE tmpMwst"
+    cSQL = "INSERT INTO MWSTSATZ (VOLL,ERM,OHNE,id,vonD,bisD)VALUES('19','7','0','4','01.01.2021',NULL)"
     gdBase.Execute cSQL, dbFailOnError
     
      
@@ -14597,7 +14622,44 @@ End Sub
 
   
 Private Sub Command15_Click()
- 'MsgBox (wievieleTage("713272"))
+On Error GoTo LOKAL_ERROR
+' TestZwecks.Show 1
+
+'an EDEKA FTP-Server eine Test-Bestellung schicken  <<<<<<<<<<<<<<<<<<< START
+' giKissFtpMode = 49
+' frmWKL38.Show 1
+'an EDEKA FTP-Server eine Test-Bestellung schicken  <<<<<<<<<<<<<<<<<<< ENDE
+
+'setzedrucker gcListenDrucker & "-oday"
+'reportbildschirmToPrinter "aWKL21i"
+
+' MsgBox (DatePart("ww", DateValue(Now), vbMonday, vbFirstFourDays)) '---> hat damals 44 geliefert
+' MsgBox (DatePart("ww", DateValue(Now))) '--->  hat damals 45 geliefert
+  
+' MsgBox ("von :" & gZeiten(7).Von & "bis :" & gZeiten(7).Bis)
+  
+  Dim tmpS As String
+  tmpS = ""
+  
+  Dim lcount As Integer
+  
+  For lcount = 1 To 9
+   
+     If lcount = 9 Then
+        tmpS = tmpS & vbCrLf
+      Else
+        tmpS = tmpS & " * " & vbCrLf
+     End If
+               
+  Next lcount
+    
+  MsgBox (tmpS)
+    
+    
+Exit Sub
+    
+LOKAL_ERROR:
+ MsgBox (err.Number & vbNewLine & vbNewLine & err.Description)
 End Sub
 
 Private Sub Command7_KeyUp(index As Integer, KeyCode As Integer, Shift As Integer)
@@ -16116,9 +16178,10 @@ Private Sub Command6_Click(index As Integer)
             
             Case Is = 4     'DsFinvK Export.
             
-                 ExportFormular.Left = (Me.ScaleWidth - ExportFormular.Width) / 2
-                 ExportFormular.Top = (Me.ScaleHeight - ExportFormular.Height) / 2
-                 ExportFormular.Show 1
+            MsgBox ("in Arbeit . . .")
+            'ExportFormular.Left = (Me.ScaleWidth - ExportFormular.Width) / 2
+            'ExportFormular.Top = (Me.ScaleHeight - ExportFormular.Height) / 2
+            'ExportFormular.Show 1
                 
             Case Is = 5     'Zugriffsrechte             ehemals 55
                 Screen.MousePointer = 11
@@ -16841,6 +16904,7 @@ End Sub
 Private Sub Command9_Click(index As Integer)
     On Error GoTo LOKAL_ERROR
     Dim lcount As Long
+    Dim ireslt As Integer
     
     If gbZugriffNew Then
     
@@ -16878,7 +16942,13 @@ Private Sub Command9_Click(index As Integer)
             Case Is = 7 'Bonus auf Bon
                 OpenProgrammTeil frmWKL34, ermittlezugriff(byteZGNr)
             Case Is = 8 'MWST
-                OpenProgrammTeil frmWKL56, ermittlezugriff(byteZGNr)
+                
+                ireslt = MsgBox("Winkiss muss an allen Arbeitplätzen beendet werden, bevor" & vbNewLine & "Sie die MWST ändern können." & vbNewLine & vbNewLine & "gegenwärtige MWST: ( V: " & gdMWStV & ", E: " & gdMWStE & ", O: " & gdMWStO & " )", vbQuestion + vbYesNo, "Winkiss Frage:")
+                If ireslt = vbYes Then
+                 TabelleMWSTSATZ_Erweiterungen_wiederherstellen
+                 OpenProgrammTeil frmWKL56, ermittlezugriff(byteZGNr)
+                End If
+                
         End Select
     
     Else
@@ -16944,11 +17014,21 @@ Private Sub Command9_Click(index As Integer)
                 End If
     
             Case Is = 8
-                If glLevel >= DlgZugriff(25).dZugriff Then
+            
+                
+                ireslt = MsgBox("Winkiss muss an allen Arbeitplätzen beendet werden, bevor" & vbNewLine & "Sie die MWST ändern können." & vbNewLine & vbNewLine & "gegenwärtige MWST: ( V: " & gdMWStV & ", E: " & gdMWStE & ", O: " & gdMWStO & " )", vbQuestion + vbYesNo, "Winkiss Frage:")
+                If ireslt = vbYes Then
+                
+                  TabelleMWSTSATZ_Erweiterungen_wiederherstellen
+                  
+                  If glLevel >= DlgZugriff(25).dZugriff Then
                     frmWKL56.Show 1
-                Else
+                  Else
                     MsgBox "Keine Zugangsberechtigung!", vbCritical, "KEIN ZUGRIFF"
+                  End If
+                  
                 End If
+                 
         End Select
     End If
     
@@ -18934,6 +19014,86 @@ LOKAL_ERROR:
     
 End Sub
 
+Private Sub Form_Activate()
+ Me.KeyPreview = True
+End Sub
+
+Private Sub Form_KeyUp(KeyCode As Integer, Shift As Integer)
+ 
+ If KeyCode = vbKeyF8 Then
+ 
+    'Bin ich BUDNI/EDEKA ?
+     Dim rsrs As Recordset
+     Set rsrs = gdBase.OpenRecordset("select * FROM LISRT WHERE FORMAT='EDIBHSG' OR FORMAT='EDIBUDNI'")
+               
+     If Not rsrs.EOF Then
+       
+           If Not gbBudniNeuesFtpVerfahren Then
+                    
+                 'BUDNI ----> EDEKA
+                 
+                 Dim ireslt1 As Integer
+                 ireslt1 = MsgBox("Winkiss muss an allen Arbeitplätzen beendet werden, bevor" & vbNewLine & "Sie die Budni-EDEKA-Umstellung durchführen können.", vbQuestion + vbYesNo, "Budni-EDEKA Umstellung durchführen:")
+                   
+                 If ireslt1 = vbYes Then
+                  FTPwechsel.Left = (Me.ScaleWidth - FTPwechsel.Width) / 2
+                  FTPwechsel.Top = (Me.ScaleHeight - FTPwechsel.Height) / 2
+                  FTPwechsel.Show 1
+                 End If
+                 
+           Else
+           
+                 'EDEKA ----> BUDNI
+                 
+                 Dim ireslt2 As Integer
+                 ireslt2 = MsgBox("Winkiss muss an allen Arbeitplätzen beendet werden, bevor" & vbNewLine & "Sie die Budni-EDEKA-Umstellung rückgängig machen können.", vbQuestion + vbYesNo, "Budni-EDEKA Umstellung rückgängig machen:")
+                   
+                 If ireslt2 = vbYes Then
+                  FTPwechselAbbruch.Left = (Me.ScaleWidth - FTPwechselAbbruch.Width) / 2
+                  FTPwechselAbbruch.Top = (Me.ScaleHeight - FTPwechselAbbruch.Height) / 2
+                  FTPwechselAbbruch.Show 1
+                 End If
+                 
+           End If
+        
+     End If
+     
+ ElseIf KeyCode = vbKeyF2 Then
+         
+        If Not FileExists(gcDBPfad & "\EineF-DateiWirdGerettet.txt") Then
+            
+            Dim ireslt3 As Integer
+            ireslt3 = MsgBox("haben Sie zuerst geprüft, ob die fehlten F-Dateien auf 'Chipotle' auch im Ordner 'zenin' nicht existieren ?", vbQuestion + vbYesNo, "F-Dateien Wiederherstellung")
+                   
+            If ireslt3 = vbYes Then
+            
+            'F-Dateien Rettung
+             FDateienRettung.Left = (Me.ScaleWidth - FDateienRettung.Width) / 2
+             FDateienRettung.Top = ((Me.ScaleHeight - FDateienRettung.Height) / 2) + 200
+             FDateienRettung.Show 1
+             
+            End If
+            
+        Else
+        
+             MsgBox ("andere Kasse rettet momentan eine F-Datei !!!" & vbNewLine & "warten Sie bitte bis diese fertig ist.")
+        
+        End If
+ End If
+ 
+ 
+ Exit Sub
+LOKAL_ERROR:
+    Fehler.gsDescr = err.Description
+    Fehler.gsNumber = err.Number
+    Fehler.gsFormular = Me.name
+    Fehler.gsFunktion = "Form_KeyUp"
+    Fehler.gsFehlertext = "Beim Öffnen eines Programmteils ist ein Fehler aufgetreten."
+    
+    Fehlermeldung1
+    
+End Sub
+
 Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
 On Error GoTo LOKAL_ERROR
 
@@ -20237,6 +20397,11 @@ On Error GoTo LOKAL_ERROR
     itsVMPtime = False
     
     If NewTableSuchenDBKombi("TAGVMP", gdApp) Then
+    
+        If Trim(gcTag) = "" Then
+         Exit Function
+        End If
+    
         sSQL = "select * from TAGVMP where Tag =  '" & WeekdayName(gcTag) & "'"
         Set rsrs = gdApp.OpenRecordset(sSQL)
         If Not rsrs.EOF Then
@@ -24975,8 +25140,21 @@ On Error GoTo LOKAL_ERROR
         End If
         
     'USB-Stick von TSE Initialisierung    ENDE <------------------------------------------------------
+   
     
-    Screen.MousePointer = 0
+    If Not NewTableSuchenDB("GI_zum_EC_Fertig", gdBase) Then
+    
+        'GI(giro) auf EC setzen in allen Tabellen,die die Spalte KK_ART enthalten
+         If GI_auf_EC_setzenFurAlleTabellenMitKK_ART = 1 Then
+          gdBase.Execute "Create Table GI_zum_EC_Fertig(EsIstFertig bit)", dbFailOnError
+         End If
+     
+    End If
+    
+    'prüf mal, ob Budni auf EDEKA schon geschafft ist (Budni auf EDEKA Umzug ist eine Anforderung, die im August 2021 geschafft wurde)
+     BudniFtpUmzug
+    
+     Screen.MousePointer = 0
 Exit Sub
 
 LOKAL_ERROR:
@@ -25072,5 +25250,102 @@ LOKAL_ERROR:
     End If
 End Sub
 
+Public Sub BudniFtpUmzug()
+ On Error GoTo LOKAL_ERROR
+     
+    Dim rsLi As Recordset
+    Dim sSQL As String
+    
+    sSQL = "SELECT Distinct FORMAT FROM LISRT WHERE FORMAT='EDIBUDNI' OR FORMAT='EDIBHSG'"
+    Set rsLi = gdBase.OpenRecordset(sSQL)
+    
+     If Not rsLi.EOF Then
+      
+       If Not NewTableSuchenDB("FTPumzugFertig", gdBase) Then
+          If Not NewTableSuchenDB("BudniEdekaDialogNichtZeigen", gdBase) Then
+            gbBudniNeuesFtpVerfahren = False
+            FTPwechsel.Left = (Me.ScaleWidth - FTPwechsel.Width) / 2
+            FTPwechsel.Top = (Me.ScaleHeight - FTPwechsel.Height) / 2
+            FTPwechsel.Show 1
+          End If
+         Else
+          gbBudniNeuesFtpVerfahren = True
+       End If
+     
+     End If
+    
+    rsLi.Close: Set rsLi = Nothing
+ 
+ Exit Sub
+LOKAL_ERROR:
+    
+    Fehler.gsDescr = err.Description
+    Fehler.gsNumber = err.Number
+    Fehler.gsFormular = "frmWKL00"
+    Fehler.gsFunktion = "BudniFtpUmzug"
+    Fehler.gsFehlertext = "Es ist ein Fehler aufgetreten."
+    
+    Fehlermeldung1
+    
+End Sub
 
+Function GI_auf_EC_setzenFurAlleTabellenMitKK_ART() As Integer
+On Error GoTo LOKAL_ERROR:
+
+   GI_auf_EC_setzenFurAlleTabellenMitKK_ART = 0
+
+   Dim i As Integer
+   Dim lcount As Integer
+   
+   Dim j As Integer
+   Dim colZahl As Integer
+    
+   Dim tabname As String
+   
+   Dim Colname As String
+
+   gdBase.TableDefs.Refresh
+   i = gdBase.TableDefs.Count
+   
+   ''''''' durch alle Tabellen schleifen  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< START
+   For lcount = 0 To i - 1
+       
+       tabname = gdBase.TableDefs(lcount).name
+       
+       j = gdBase.TableDefs(tabname).Fields.Count
+       
+       ''''''' durch alle Columns schleifen  <<<< START
+        For colZahl = 0 To j - 1
+        
+          Colname = gdBase.TableDefs(tabname).Fields(colZahl).name
+          
+          If InStr(1, Colname, "KK_ART") > 0 Then
+             'GI auf EC ändern
+             gdBase.Execute "UPDATE " & tabname & " SET KK_ART='EC' WHERE KK_ART='GI'", dbFailOnError
+             Exit For
+          End If
+          
+        Next colZahl
+       ''''''' durch alle Columns schleifen  <<<< START
+       
+   Next lcount
+ ''''''' durch alle Tabellen schleifen  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ENDE
+ 
+  GI_auf_EC_setzenFurAlleTabellenMitKK_ART = 1
+
+Exit Function
+
+LOKAL_ERROR:
+
+    GI_auf_EC_setzenFurAlleTabellenMitKK_ART = 0
+    
+    Fehler.gsDescr = err.Description
+    Fehler.gsNumber = err.Number
+    Fehler.gsFormular = "frmWKL00"
+    Fehler.gsFunktion = "GI_auf_EC_setzenFurAlleTabellenMitKK_ART"
+    Fehler.gsFehlertext = "Im Programmteil Winkiss Starten ist ein Fehler aufgetreten."
+
+    Fehlermeldung1
+    
+End Function
 
